@@ -1381,6 +1381,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;/g&gt;
     &lt;/g&gt;
     &lt;g id=&quot;sl-pipette&quot;&gt;
+      &lt;rect id=&quot;sl-pipette-hit&quot; fill=&quot;transparent&quot; cursor=&quot;pointer&quot;&gt;&lt;/rect&gt;
       &lt;path id=&quot;sl-pipette-body&quot; class=&quot;sl-glass&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-pipette-ink&quot; class=&quot;sl-reservoir&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-pipette-marks&quot; class=&quot;sl-wall&quot;&gt;&lt;/path&gt;
@@ -1418,6 +1419,11 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-vortex-glow { fill: var(--primary); fill-opacity: .20; }
   #streakline-lab .sl-vortex-ring { fill: none; stroke: var(--primary); stroke-opacity: .85; stroke-width: 1.5; stroke-dasharray: 4 3; }
   #streakline-lab .sl-vortex-center { fill: var(--primary); }
+  #streakline-lab #sl-pipette { cursor: pointer; user-select: none; -webkit-user-select: none; }
+  #streakline-lab #sl-bulb { transition: transform 0.08s ease, filter 0.08s ease; transform-origin: 50% 100%; transform-box: fill-box; }
+  #streakline-lab #sl-pipette.sl-squeezed #sl-bulb { transform: scale(1.15, 0.75); filter: brightness(1.25); }
+  #streakline-lab #sl-source { transition: transform 0.08s ease; transform-origin: center; transform-box: fill-box; }
+  #streakline-lab #sl-pipette.sl-squeezed #sl-source { transform: scale(1.6); filter: drop-shadow(0 0 3px var(--viz-series-1)); }
   #streakline-lab .sl-glass { fill: var(--background); fill-opacity: .78; stroke: var(--foreground); stroke-opacity: .48; stroke-width: 1.2; }
   #streakline-lab .sl-reservoir { fill: var(--viz-series-1); fill-opacity: .48; }
   #streakline-lab .sl-bulb { fill: var(--secondary); stroke: var(--foreground); stroke-opacity: .46; stroke-width: 1.2; }
@@ -1447,6 +1453,8 @@ html&gt;body{padding:0}&lt;/style&gt;
   const waveVal = el(&#x27;sl-wave-val&#x27;);
   const clearVortex = el(&#x27;sl-vortex-clear&#x27;);
   const vortexLegend = el(&#x27;sl-vortex-legend&#x27;);
+  const pipette = el(&#x27;sl-pipette&#x27;);
+  let isPipetteHeld = false;
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
   const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true, rate: 4, line: true, waveStrength: 1 };
   const vortex = { active: false, x: 6, y: 2, gamma: 1.2 };
@@ -1514,8 +1522,9 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
   function step() {
     const t = ticks * DT;
-    if (state.injecting) {
-      injectAccumulator += state.rate * DT;
+    if (state.injecting || isPipetteHeld) {
+      const currentRate = isPipetteHeld &amp;&amp; state.injecting ? state.rate * 1.5 : state.rate;
+      injectAccumulator += currentRate * DT;
       while (injectAccumulator &gt;= 1) {
         injectAccumulator -= 1;
         particles.push({ ...SOURCE, born: t, run, id: released++ });
@@ -1547,6 +1556,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     let marks = &#x27;&#x27;;
     for (let y = 65; y &lt; tip - 53; y += 12) marks += `M${x-10},${y}h6`;
     el(&#x27;sl-pipette-marks&#x27;).setAttribute(&#x27;d&#x27;, marks);
+    attributes(el(&#x27;sl-pipette-hit&#x27;), { x: x - 22, y: 14, width: 44, height: tip - 10 });
     attributes(el(&#x27;sl-bulb&#x27;), { x: x - 14, y: 19, width: 28, height: 37 });
     attributes(el(&#x27;sl-source&#x27;), { cx: x, cy: tip });
     attributes(el(&#x27;sl-pipette-label&#x27;), { x: x + 25, y: 34 });
@@ -1581,7 +1591,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       }
       if (p.id % dotStride === 0) dots += &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;;
     }
-    if (state.line &amp;&amp; state.injecting &amp;&amp; previousRun === run) path += &#x27;L&#x27; + xy(SOURCE);
+    if (state.line &amp;&amp; (state.injecting || isPipetteHeld) &amp;&amp; previousRun === run) path += &#x27;L&#x27; + xy(SOURCE);
     el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-dots&#x27;).setAttribute(&#x27;d&#x27;, dots);
@@ -1606,8 +1616,10 @@ html&gt;body{padding:0}&lt;/style&gt;
     lineToggle.checked = state.line;
     rate.value = state.rate;
     rateVal.textContent = `${state.rate} / s`;
-    el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? `${state.rate} ${state.rate === 1 ? &#x27;tracer&#x27; : &#x27;tracers&#x27;} / s` : &#x27;Dye off&#x27;;
-    el(&#x27;sl-source&#x27;).style.opacity = state.injecting ? &#x27;1&#x27; : &#x27;.3&#x27;;
+    if (!isPipetteHeld) {
+      el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? `${state.rate} ${state.rate === 1 ? &#x27;tracer&#x27; : &#x27;tracers&#x27;} / s` : &#x27;Dye off&#x27;;
+      el(&#x27;sl-source&#x27;).style.opacity = state.injecting ? &#x27;1&#x27; : &#x27;.3&#x27;;
+    }
     wave.value = Math.round(state.waveStrength * 100);
     waveVal.textContent = `${wave.value}%`;
     wave.disabled = state.mode === &#x27;uniform&#x27;;
@@ -1633,6 +1645,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   });
   let draggingVortex = false;
   function handlePointer(event) {
+    if (event.target &amp;&amp; event.target.closest &amp;&amp; event.target.closest(&#x27;#sl-pipette&#x27;)) return false;
     const rect = svg.getBoundingClientRect();
     if (!rect.width || !rect.height) return false;
     const svgX = (event.clientX - rect.left) / rect.width * width;
@@ -1648,6 +1661,35 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
     return false;
   }
+  function pressPipette(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    isPipetteHeld = true;
+    pipette.classList.add(&#x27;sl-squeezed&#x27;);
+    run++;
+    const t = ticks * DT;
+    particles.push({ ...SOURCE, born: t, run, id: released++ });
+    injectAccumulator = 0;
+    el(&#x27;sl-source&#x27;).style.opacity = &#x27;1&#x27;;
+    el(&#x27;sl-rate-label&#x27;).textContent = `${state.rate} ${state.rate === 1 ? &#x27;tracer&#x27; : &#x27;tracers&#x27;} / s`;
+    try { pipette.setPointerCapture(e.pointerId); } catch {}
+    draw();
+    announce(&#x27;Pipette squeezed; firing dye.&#x27;);
+  }
+  function releasePipette(e) {
+    if (isPipetteHeld) {
+      isPipetteHeld = false;
+      pipette.classList.remove(&#x27;sl-squeezed&#x27;);
+      try { pipette.releasePointerCapture(e.pointerId); } catch {}
+      syncControls();
+      draw();
+      save();
+      announce(&#x27;Pipette released.&#x27;);
+    }
+  }
+  pipette.addEventListener(&#x27;pointerdown&#x27;, pressPipette);
+  pipette.addEventListener(&#x27;pointerup&#x27;, releasePipette);
+  pipette.addEventListener(&#x27;pointercancel&#x27;, releasePipette);
   svg.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
     if (handlePointer(e)) {
       draggingVortex = true;
@@ -1725,6 +1767,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 &lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
