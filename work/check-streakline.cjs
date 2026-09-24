@@ -35,6 +35,8 @@ assert(!fragment.includes('\\"'));
   assert.equal(await ui.locator('#sl-theme-text').textContent(), 'Light', 'theme toggle switches to dark mode showing Light button');
   await ui.locator('#sl-theme-toggle').click();
   assert.equal(await ui.locator('#sl-theme-text').textContent(), 'Dark', 'theme toggle switches back to light mode showing Dark button');
+  await page.evaluate(() => { try { localStorage.removeItem('sl-theme'); } catch {} });
+  await page.frames().find(f => f.parentFrame()).evaluate(() => { try { localStorage.removeItem('sl-theme'); } catch {} });
 
   await ui.locator('#sl-streamline-toggle').check();
   const stInitial = await ui.locator('#sl-streamline-line').getAttribute('d');
