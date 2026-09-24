@@ -1390,6 +1390,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;span class=&quot;form-check-label&quot;&gt;Connecting line&lt;/span&gt;
       &lt;/label&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-vortex-clear&quot; disabled&gt;Clear swirl&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;sl-reset&quot;&gt;Reset&lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;svg class=&quot;sl-scene&quot; id=&quot;sl-scene&quot; role=&quot;img&quot; aria-labelledby=&quot;sl-title sl-description&quot;&gt;
@@ -1488,6 +1489,10 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-chip:hover:not(:disabled) { opacity: 1; border-color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, var(--card)); color: var(--primary); }
   #streakline-lab .sl-chip.is-active { opacity: 1; border-color: var(--primary); background: var(--primary); color: #ffffff; font-weight: 600; }
   #streakline-lab .sl-chip:disabled { opacity: 0.35; cursor: not-allowed; }
+  #streakline-lab #sl-reset { background: #dc2626; border-color: #b91c1c; color: #ffffff; font-weight: 500; cursor: pointer; transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
+  #streakline-lab #sl-reset:hover { background: #b91c1c; border-color: #991b1b; box-shadow: 0 1px 4px rgba(220, 38, 38, 0.35); }
+  #streakline-lab #sl-reset:active { transform: scale(0.94); background: #991b1b; }
+  #streakline-lab #sl-reset:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4); }
   @media (max-width: 440px) {
     #streakline-lab .sl-heading { gap: 6px; }
     #streakline-lab .sl-scene { height: 330px; }
@@ -1890,6 +1895,24 @@ html&gt;body{padding:0}&lt;/style&gt;
       }
     });
   });
+  const resetBtn = el(&#x27;sl-reset&#x27;);
+  function resetAll() {
+    state.mode = &#x27;unsteady&#x27;;
+    state.paused = false;
+    state.injecting = false;
+    state.line = false;
+    state.rate = 4;
+    state.waveStrength = 1;
+    vortex.active = false;
+    isPipetteHeld = false;
+    pipette.classList.remove(&#x27;sl-squeezed&#x27;);
+    initialize();
+    syncControls();
+    draw();
+    save();
+    announce(&#x27;Experiment reset to initial conditions.&#x27;);
+  }
+  if (resetBtn) resetBtn.addEventListener(&#x27;click&#x27;, resetAll);
   pause.addEventListener(&#x27;click&#x27;, () =&gt; {
     state.paused = !state.paused; last = null; syncControls(); save();
     announce(state.paused ? `Paused at ${(ticks * DT).toFixed(1)} seconds.` : &#x27;Simulation playing.&#x27;);
@@ -1935,6 +1958,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
