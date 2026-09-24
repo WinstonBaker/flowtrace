@@ -2263,7 +2263,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   const themeIcon = themeToggle ? themeToggle.querySelector(&#x27;.sl-theme-icon&#x27;) : null;
   const themeText = el(&#x27;sl-theme-text&#x27;);
   function getSystemTheme() {
-    return window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).matches ? &#x27;dark&#x27; : &#x27;light&#x27;;
+    return window.matchMedia(&#x27;(prefers-color-scheme: light)&#x27;).matches ? &#x27;light&#x27; : &#x27;dark&#x27;;
   }
   function getStoredTheme() {
     try {
@@ -2921,6 +2921,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 
 
+
 &lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
@@ -3485,7 +3486,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   });
   const savedHostTheme = (() => {
     try { return localStorage.getItem("sl-theme"); } catch { return null; }
-  })() || (globalThis.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  })() || (globalThis.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
   if (savedHostTheme === "dark") {
     updateHostTheme("dark");
   }
