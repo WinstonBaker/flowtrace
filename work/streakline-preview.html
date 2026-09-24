@@ -1339,6 +1339,10 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;option value=&quot;uniform&quot;&gt;Uniform flow&lt;/option&gt;
       &lt;/select&gt;
     &lt;/label&gt;
+    &lt;label class=&quot;form-label&quot; for=&quot;sl-wave&quot;&gt;Wave strength
+      &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-wave-val&quot;&gt;100%&lt;/span&gt;
+      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-wave&quot; min=&quot;0&quot; max=&quot;200&quot; step=&quot;10&quot; value=&quot;100&quot;&gt;
+    &lt;/label&gt;
     &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;Tracer rate
       &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-rate-val&quot;&gt;4 / s&lt;/span&gt;
       &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0.5&quot; max=&quot;100&quot; step=&quot;0.5&quot; value=&quot;4&quot;&gt;
@@ -1353,11 +1357,12 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot; checked&gt;
         &lt;span class=&quot;form-check-label&quot;&gt;Connecting line&lt;/span&gt;
       &lt;/label&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-vortex-clear&quot; disabled&gt;Clear swirl&lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;svg class=&quot;sl-scene&quot; id=&quot;sl-scene&quot; role=&quot;img&quot; aria-labelledby=&quot;sl-title sl-description&quot;&gt;
     &lt;title id=&quot;sl-title&quot;&gt;Dye released from a fixed pipette into a flowing channel&lt;/title&gt;
-    &lt;desc id=&quot;sl-description&quot;&gt;The pipette releases passive tracers into the channel at an adjustable rate. The colored streak joins their current positions, while arrows indicate the local velocity. The entire streak changes shape in the unsteady flow. The dye has no diffusion and does not affect the prescribed flow.&lt;/desc&gt;
+    &lt;desc id=&quot;sl-description&quot;&gt;The pipette releases passive tracers into the channel at an adjustable rate. You can adjust wave strength and click or drag anywhere in the water to introduce a swirling vortex. The colored streak joins tracer positions, while arrows indicate the local velocity.&lt;/desc&gt;
     &lt;defs&gt;
       &lt;clipPath id=&quot;sl-water-clip&quot;&gt;&lt;rect id=&quot;sl-clip-box&quot;&gt;&lt;/rect&gt;&lt;/clipPath&gt;
     &lt;/defs&gt;
@@ -1369,6 +1374,11 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;path id=&quot;sl-dye-soft&quot; class=&quot;sl-dye-soft&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-dye-line&quot; class=&quot;sl-dye-line&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-dye-dots&quot; class=&quot;sl-dye-dots&quot;&gt;&lt;/path&gt;
+      &lt;g id=&quot;sl-vortex&quot; style=&quot;display:none;pointer-events:none;&quot;&gt;
+        &lt;circle class=&quot;sl-vortex-glow&quot; r=&quot;22&quot;&gt;&lt;/circle&gt;
+        &lt;circle id=&quot;sl-vortex-ring&quot; class=&quot;sl-vortex-ring&quot; r=&quot;14&quot;&gt;&lt;/circle&gt;
+        &lt;circle class=&quot;sl-vortex-center&quot; r=&quot;3.5&quot;&gt;&lt;/circle&gt;
+      &lt;/g&gt;
     &lt;/g&gt;
     &lt;g id=&quot;sl-pipette&quot;&gt;
       &lt;path id=&quot;sl-pipette-body&quot; class=&quot;sl-glass&quot;&gt;&lt;/path&gt;
@@ -1386,7 +1396,9 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;div class=&quot;viz-row sl-legend&quot;&gt;
       &lt;span&gt;&lt;span class=&quot;sl-swatch&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Dye streakline&lt;/span&gt;
       &lt;span&gt;&lt;span class=&quot;sl-velocity&quot; aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;Local velocity&lt;/span&gt;
+      &lt;span id=&quot;sl-vortex-legend&quot; style=&quot;display:none;align-items:center;gap:6px;&quot;&gt;&lt;span style=&quot;display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px dashed var(--primary,#3b82f6);&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Swirl vortex&lt;/span&gt;
     &lt;/div&gt;
+    &lt;span class=&quot;text-small&quot; style=&quot;opacity:0.75;&quot;&gt;Click/drag water to stir flow&lt;/span&gt;
     &lt;span class=&quot;tabular-nums&quot; id=&quot;sl-count&quot;&gt;0 tracers in view&lt;/span&gt;
   &lt;/div&gt;
   &lt;div id=&quot;sl-announcement&quot; class=&quot;sr-only&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
@@ -1395,7 +1407,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab { color: var(--foreground); }
   #streakline-lab .sl-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
   #streakline-lab h2 { margin: 0; }
-  #streakline-lab .sl-scene { display: block; width: 100%; height: 370px; overflow: visible; }
+  #streakline-lab .sl-scene { display: block; width: 100%; height: 370px; overflow: visible; cursor: crosshair; touch-action: none; }
   #streakline-lab .sl-water { fill: var(--muted); opacity: .38; }
   #streakline-lab .sl-wall { fill: none; stroke: var(--foreground); stroke-opacity: .20; stroke-width: 1; }
   #streakline-lab .sl-arrows { fill: none; stroke: var(--foreground); stroke-opacity: .28; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
@@ -1403,6 +1415,9 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-dye-soft { fill: none; stroke: var(--viz-series-1); stroke-opacity: .16; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
   #streakline-lab .sl-dye-line { fill: none; stroke: var(--viz-series-1); stroke-opacity: .82; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
   #streakline-lab .sl-dye-dots { fill: none; stroke: var(--viz-series-1); stroke-width: 4; stroke-linecap: round; }
+  #streakline-lab .sl-vortex-glow { fill: var(--primary); fill-opacity: .20; }
+  #streakline-lab .sl-vortex-ring { fill: none; stroke: var(--primary); stroke-opacity: .85; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  #streakline-lab .sl-vortex-center { fill: var(--primary); }
   #streakline-lab .sl-glass { fill: var(--background); fill-opacity: .78; stroke: var(--foreground); stroke-opacity: .48; stroke-width: 1.2; }
   #streakline-lab .sl-reservoir { fill: var(--viz-series-1); fill-opacity: .48; }
   #streakline-lab .sl-bulb { fill: var(--secondary); stroke: var(--foreground); stroke-opacity: .46; stroke-width: 1.2; }
@@ -1428,8 +1443,13 @@ html&gt;body{padding:0}&lt;/style&gt;
   const rate = el(&#x27;sl-rate&#x27;);
   const rateVal = el(&#x27;sl-rate-val&#x27;);
   const lineToggle = el(&#x27;sl-line-toggle&#x27;);
+  const wave = el(&#x27;sl-wave&#x27;);
+  const waveVal = el(&#x27;sl-wave-val&#x27;);
+  const clearVortex = el(&#x27;sl-vortex-clear&#x27;);
+  const vortexLegend = el(&#x27;sl-vortex-legend&#x27;);
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
-  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true, rate: 4, line: true };
+  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true, rate: 4, line: true, waveStrength: 1 };
+  const vortex = { active: false, x: 6, y: 2, gamma: 1.2 };
   const L = 12, H = 4, U = 0.65, B = 0.50, K = 0.82, OMEGA = 0.58;
   const SOURCE = { x: 1.28, y: 2.65 };
   const DT = 1 / 120;
@@ -1444,6 +1464,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.paused === &#x27;boolean&#x27;) state.paused = saved.paused;
     if (typeof saved.injecting === &#x27;boolean&#x27;) state.injecting = saved.injecting;
     if (typeof saved.line === &#x27;boolean&#x27;) state.line = saved.line;
+    if (typeof saved.waveStrength === &#x27;number&#x27; &amp;&amp; saved.waveStrength &gt;= 0 &amp;&amp; saved.waveStrength &lt;= 2) state.waveStrength = saved.waveStrength;
     const r = Number(saved.rate ?? saved.releaseRate);
     if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 100) state.rate = r;
   }
@@ -1454,14 +1475,26 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
   }
   function velocity(x, y, t) {
-    if (state.mode === &#x27;uniform&#x27;) return { x: U, y: 0 };
-    const phase = K * x - (state.mode === &#x27;unsteady&#x27; ? OMEGA * t : 0);
-    const s = Math.sin(Math.PI * y / H);
-    // A prescribed incompressible field from psi = U*y + B*sin(phase)*sin(pi*y/H)^2.
-    return {
-      x: U + B * Math.PI / H * Math.sin(2 * Math.PI * y / H) * Math.sin(phase),
-      y: -B * K * Math.cos(phase) * s * s
-    };
+    let vx = 0, vy = 0;
+    if (state.mode === &#x27;uniform&#x27;) {
+      vx = U;
+      vy = 0;
+    } else {
+      const phase = K * x - (state.mode === &#x27;unsteady&#x27; ? OMEGA * t : 0);
+      const s = Math.sin(Math.PI * y / H);
+      const amp = B * state.waveStrength;
+      vx = U + amp * Math.PI / H * Math.sin(2 * Math.PI * y / H) * Math.sin(phase);
+      vy = -amp * K * Math.cos(phase) * s * s;
+    }
+    if (vortex.active) {
+      const dx = x - vortex.x, dy = y - vortex.y;
+      const r2 = dx * dx + dy * dy;
+      const w = Math.sin(Math.PI * Math.max(0, Math.min(H, y)) / H);
+      const factor = (vortex.gamma / (r2 + 0.36)) * w;
+      vx -= dy * factor;
+      vy += dx * factor;
+    }
+    return { x: vx, y: vy };
   }
   function advect(p, t, dt) {
     const a = velocity(p.x, p.y, t);
@@ -1553,6 +1586,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-dots&#x27;).setAttribute(&#x27;d&#x27;, dots);
     el(&#x27;sl-count&#x27;).textContent = `${particles.length} tracers in view`;
+    if (vortex.active) {
+      el(&#x27;sl-vortex&#x27;).style.display = &#x27;&#x27;;
+      el(&#x27;sl-vortex&#x27;).setAttribute(&#x27;transform&#x27;, `translate(${n(px(vortex.x))},${n(py(vortex.y))})`);
+      el(&#x27;sl-vortex-ring&#x27;).setAttribute(&#x27;transform&#x27;, `rotate(${((t * 180) % 360).toFixed(1)})`);
+    } else {
+      el(&#x27;sl-vortex&#x27;).style.display = &#x27;none&#x27;;
+    }
     if (Math.floor(t * 10) !== uiClock) {
       uiClock = Math.floor(t * 10);
       el(&#x27;sl-time&#x27;).textContent = `t = ${t.toFixed(1)} s`;
@@ -1568,8 +1608,64 @@ html&gt;body{padding:0}&lt;/style&gt;
     rateVal.textContent = `${state.rate} / s`;
     el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? `${state.rate} ${state.rate === 1 ? &#x27;tracer&#x27; : &#x27;tracers&#x27;} / s` : &#x27;Dye off&#x27;;
     el(&#x27;sl-source&#x27;).style.opacity = state.injecting ? &#x27;1&#x27; : &#x27;.3&#x27;;
+    wave.value = Math.round(state.waveStrength * 100);
+    waveVal.textContent = `${wave.value}%`;
+    wave.disabled = state.mode === &#x27;uniform&#x27;;
+    clearVortex.disabled = !vortex.active;
+    vortexLegend.style.display = vortex.active ? &#x27;inline-flex&#x27; : &#x27;none&#x27;;
   }
   const announce = text =&gt; { el(&#x27;sl-announcement&#x27;).textContent = text; };
+  wave.addEventListener(&#x27;input&#x27;, () =&gt; {
+    state.waveStrength = Number(wave.value) / 100;
+    waveVal.textContent = `${wave.value}%`;
+    draw();
+    save();
+  });
+  wave.addEventListener(&#x27;change&#x27;, () =&gt; {
+    announce(`Wave strength set to ${wave.value} percent.`);
+  });
+  clearVortex.addEventListener(&#x27;click&#x27;, () =&gt; {
+    vortex.active = false;
+    syncControls();
+    draw();
+    save();
+    announce(&#x27;Swirl vortex removed.&#x27;);
+  });
+  let draggingVortex = false;
+  function handlePointer(event) {
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width || !rect.height) return false;
+    const svgX = (event.clientX - rect.left) / rect.width * width;
+    const svgY = (event.clientY - rect.top) / rect.height * height;
+    if (svgY &gt;= top &amp;&amp; svgY &lt;= bottom &amp;&amp; svgX &gt;= 12 &amp;&amp; svgX &lt;= width - 12) {
+      vortex.x = Math.max(0.4, Math.min(L - 0.4, (svgX - 12) / (width - 24) * L));
+      vortex.y = Math.max(0.2, Math.min(H - 0.2, (bottom - svgY) / (bottom - top) * H));
+      vortex.active = true;
+      syncControls();
+      draw();
+      save();
+      return true;
+    }
+    return false;
+  }
+  svg.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
+    if (handlePointer(e)) {
+      draggingVortex = true;
+      try { svg.setPointerCapture(e.pointerId); } catch {}
+      announce(&#x27;Swirl vortex placed in fluid.&#x27;);
+    }
+  });
+  svg.addEventListener(&#x27;pointermove&#x27;, e =&gt; {
+    if (draggingVortex) handlePointer(e);
+  });
+  const stopDrag = e =&gt; {
+    if (draggingVortex) {
+      draggingVortex = false;
+      try { svg.releasePointerCapture(e.pointerId); } catch {}
+    }
+  };
+  svg.addEventListener(&#x27;pointerup&#x27;, stopDrag);
+  svg.addEventListener(&#x27;pointercancel&#x27;, stopDrag);
   lineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
     state.line = lineToggle.checked;
     draw();
