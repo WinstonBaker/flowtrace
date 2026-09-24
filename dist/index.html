@@ -1360,7 +1360,7 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;div class=&quot;sl-slider-row&quot;&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
             &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;167&quot; data-min=&quot;1&quot; data-max=&quot;1000000&quot; data-rate=&quot;10&quot; style=&quot;--sl-pct: 16.7%;&quot;&gt;
+              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;250&quot; data-min=&quot;1&quot; data-max=&quot;10000&quot; data-rate=&quot;10&quot; style=&quot;--sl-pct: 25%;&quot;&gt;
             &lt;/div&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
           &lt;/div&gt;
@@ -1370,8 +1370,6 @@ html&gt;body{padding:0}&lt;/style&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10000&quot;&gt;10k / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100000&quot;&gt;100k / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000000&quot;&gt;1M / s&lt;/button&gt;
           &lt;/div&gt;
         &lt;/div&gt;
       &lt;/label&gt;
@@ -2229,26 +2227,23 @@ html&gt;body{padding:0}&lt;/style&gt;
   let width = 736, height = 370, top = 134, bottom = 342;
   let last = null, accumulated = 0, uiClock = -1;
   function formatRate(r) {
-    if (r &gt;= 1000000) return (r / 1000000).toFixed(r % 1000000 === 0 ? 0 : 1) + &#x27;M / s&#x27;;
-    if (r &gt;= 10000) return Math.round(r / 1000) + &#x27;k / s&#x27;;
+    if (r &gt;= 10000) return &#x27;10k / s&#x27;;
     if (r &gt;= 1000) return (Math.round(r)).toLocaleString() + &#x27; / s&#x27;;
     return (r &lt; 10 &amp;&amp; r % 1 !== 0 ? r.toFixed(1) : Math.round(r)) + &#x27; / s&#x27;;
   }
   function posToRate(pos) {
     const t = Math.max(0, Math.min(1000, Number(pos))) / 1000;
-    const raw = 1.0 * Math.pow(1000000, t);
+    const raw = 1.0 * Math.pow(10000, t);
     if (raw &lt;= 1) return 1;
-    if (raw &gt;= 1000000) return 1000000;
+    if (raw &gt;= 10000) return 10000;
     if (raw &lt; 10) return Math.round(raw);
     if (raw &lt; 100) return Math.round(raw);
     if (raw &lt; 1000) return Math.round(raw / 10) * 10;
-    if (raw &lt; 10000) return Math.round(raw / 100) * 100;
-    if (raw &lt; 100000) return Math.round(raw / 1000) * 1000;
-    return Math.round(raw / 10000) * 10000;
+    return Math.round(raw / 100) * 100;
   }
   function rateToPos(r) {
-    const clamped = Math.max(1, Math.min(1000000, Number(r)));
-    const t = Math.log(clamped) / Math.log(1000000);
+    const clamped = Math.max(1, Math.min(10000, Number(r)));
+    const t = Math.log(clamped) / Math.log(10000);
     return Math.round(t * 1000);
   }
   function stepRate(currentRate, dir) {
@@ -2258,18 +2253,14 @@ html&gt;body{padding:0}&lt;/style&gt;
       if (currentRate &lt; 50) return currentRate + 5;
       if (currentRate &lt; 200) return currentRate + 25;
       if (currentRate &lt; 1000) return currentRate + 100;
-      if (currentRate &lt; 10000) return currentRate + 1000;
-      if (currentRate &lt; 100000) return currentRate + 10000;
-      return Math.min(1000000, currentRate + 100000);
+      return Math.min(10000, currentRate + 1000);
     } else {
       if (currentRate &lt;= 2) return 1;
       if (currentRate &lt;= 10) return currentRate - 1;
       if (currentRate &lt;= 50) return currentRate - 5;
       if (currentRate &lt;= 200) return currentRate - 25;
       if (currentRate &lt;= 1000) return currentRate - 100;
-      if (currentRate &lt;= 10000) return currentRate - 1000;
-      if (currentRate &lt;= 100000) return currentRate - 10000;
-      return Math.max(1, currentRate - 100000);
+      return Math.max(1, currentRate - 1000);
     }
   }
   const settingsFrom = value =&gt; value?.modelContent?.streakline || value?.streakline;
@@ -2285,7 +2276,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.streamline === &#x27;boolean&#x27;) state.streamline = saved.streamline;
     if (typeof saved.waveStrength === &#x27;number&#x27; &amp;&amp; saved.waveStrength &gt;= 0 &amp;&amp; saved.waveStrength &lt;= 2) state.waveStrength = saved.waveStrength;
     const r = Number(saved.rate ?? saved.releaseRate);
-    if (Number.isFinite(r) &amp;&amp; r &gt;= 1 &amp;&amp; r &lt;= 1000000) state.rate = r;
+    if (Number.isFinite(r) &amp;&amp; r &gt;= 1 &amp;&amp; r &lt;= 10000) state.rate = r;
   }
   applySettings(window.openai?.widgetState);
   function save() {
@@ -2803,6 +2794,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
