@@ -1692,7 +1692,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       }
     }
     particles = particles.filter(p =&gt; p.x &lt;= L + .2 &amp;&amp; p.y &gt;= 0 &amp;&amp; p.y &lt;= H);
-    if (particles.length &gt; 5000) particles = particles.filter((_, idx) =&gt; idx % 2 === 0);
+    if (particles.length &gt; 30000) particles.splice(0, particles.length - 30000);
     for (const p of motes) {
       advect(p, t, DT);
       if (p.x &gt; L + .1) p.x -= L + .2;
@@ -1745,8 +1745,9 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-motes&#x27;).setAttribute(&#x27;d&#x27;, motes.map(p =&gt; &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;).join(&#x27;&#x27;));
     let path = &#x27;&#x27;, dots = &#x27;&#x27;, previousRun = null;
     const dotStride = state.line ? (state.rate &lt;= 15 ? 1 : Math.max(1, Math.round(state.rate / 4))) : (state.rate &lt;= 50 ? 1 : Math.max(1, Math.round(state.rate / 40)));
+    const lineStride = state.rate &lt;= 100 ? 1 : Math.max(1, Math.round(state.rate / 100));
     for (const p of particles) {
-      if (state.line) {
+      if (state.line &amp;&amp; (p.id % lineStride === 0 || p.run !== previousRun)) {
         path += (p.run === previousRun ? &#x27;L&#x27; : &#x27;M&#x27;) + xy(p);
         previousRun = p.run;
       }
@@ -2069,6 +2070,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
