@@ -1339,12 +1339,59 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;/div&gt;
 
   &lt;div class=&quot;sl-dashboard-grid&quot;&gt;
-    &lt;!-- Flow Dynamics Card --&gt;
-    &lt;div class=&quot;sl-card&quot;&gt;
+    &lt;!-- Tracer Injection Card (Core Focus) --&gt;
+    &lt;div class=&quot;sl-card sl-card-primary&quot;&gt;
       &lt;div class=&quot;sl-card-header&quot;&gt;
         &lt;div class=&quot;sl-card-title-group&quot;&gt;
-          &lt;span class=&quot;sl-card-title&quot;&gt;Flow Dynamics&lt;/span&gt;
-          &lt;span class=&quot;sl-card-desc&quot;&gt;Adjust velocity wave oscillation&lt;/span&gt;
+          &lt;div class=&quot;sl-title-with-badge&quot;&gt;
+            &lt;span class=&quot;sl-card-title&quot;&gt;Tracer Injection&lt;/span&gt;
+            &lt;span class=&quot;sl-priority-badge&quot;&gt;Core Focus&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;span class=&quot;sl-card-desc&quot;&gt;Inject passive fluid dye particles into the channel flow&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;label class=&quot;form-check form-switch sl-dye-switch&quot; for=&quot;sl-dye&quot;&gt;
+          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
+          &lt;span class=&quot;form-check-label sl-dye-label&quot;&gt;Release dye&lt;/span&gt;
+        &lt;/label&gt;
+      &lt;/div&gt;
+      &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
+        &lt;div class=&quot;sl-label-row&quot;&gt;
+          &lt;span class=&quot;sl-rate-label-text&quot;&gt;Emission rate&lt;/span&gt;
+          &lt;span class=&quot;text-small tabular-nums sl-badge sl-badge-primary&quot; id=&quot;sl-rate-val&quot;&gt;0.5 / s&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sl-slider-container&quot;&gt;
+          &lt;div class=&quot;sl-slider-row&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
+            &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
+              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;0.5&quot; data-max=&quot;1000000&quot; data-rate=&quot;0.5&quot;&gt;
+            &lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sl-presets&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;0.5&quot;&gt;0.5 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10000&quot;&gt;10k / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100000&quot;&gt;100k / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000000&quot;&gt;1M / s&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/label&gt;
+      &lt;div class=&quot;sl-tracer-tip&quot;&gt;
+        &lt;span&gt;💡 &lt;em&gt;Click or hold pipette&lt;/em&gt; in water to squirt manually&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Flow Dynamics Card (Fun / Perturbation) --&gt;
+    &lt;div class=&quot;sl-card sl-card-secondary&quot;&gt;
+      &lt;div class=&quot;sl-card-header&quot;&gt;
+        &lt;div class=&quot;sl-card-title-group&quot;&gt;
+          &lt;div class=&quot;sl-title-with-badge&quot;&gt;
+            &lt;span class=&quot;sl-card-title&quot;&gt;Wave Oscillation&lt;/span&gt;
+            &lt;span class=&quot;sl-fun-badge&quot;&gt;Fun Waves&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;span class=&quot;sl-card-desc&quot;&gt;Perturb flow with periodic waves&lt;/span&gt;
         &lt;/div&gt;
         &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-freeze-field&quot;&gt;Freeze velocity field&lt;/button&gt;
       &lt;/div&gt;
@@ -1367,44 +1414,6 @@ html&gt;body{padding:0}&lt;/style&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;100&quot;&gt;100%&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;150&quot;&gt;150%&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;200&quot;&gt;200%&lt;/button&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/label&gt;
-    &lt;/div&gt;
-
-    &lt;!-- Tracer Injection Card --&gt;
-    &lt;div class=&quot;sl-card&quot;&gt;
-      &lt;div class=&quot;sl-card-header&quot;&gt;
-        &lt;div class=&quot;sl-card-title-group&quot;&gt;
-          &lt;span class=&quot;sl-card-title&quot;&gt;Tracer Injection&lt;/span&gt;
-          &lt;span class=&quot;sl-card-desc&quot;&gt;Release passive dye particles&lt;/span&gt;
-        &lt;/div&gt;
-        &lt;label class=&quot;form-check form-switch sl-dye-switch&quot; for=&quot;sl-dye&quot;&gt;
-          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
-          &lt;span class=&quot;form-check-label&quot;&gt;Release dye&lt;/span&gt;
-        &lt;/label&gt;
-      &lt;/div&gt;
-      &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
-        &lt;div class=&quot;sl-label-row&quot;&gt;
-          &lt;span&gt;Tracer rate&lt;/span&gt;
-          &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-rate-val&quot;&gt;0.5 / s&lt;/span&gt;
-        &lt;/div&gt;
-        &lt;div class=&quot;sl-slider-container&quot;&gt;
-          &lt;div class=&quot;sl-slider-row&quot;&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
-            &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;0.5&quot; data-max=&quot;1000000&quot; data-rate=&quot;0.5&quot;&gt;
-            &lt;/div&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
-          &lt;/div&gt;
-          &lt;div class=&quot;sl-presets&quot;&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;0.5&quot;&gt;0.5 / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10000&quot;&gt;10k / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100000&quot;&gt;100k / s&lt;/button&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000000&quot;&gt;1M / s&lt;/button&gt;
           &lt;/div&gt;
         &lt;/div&gt;
       &lt;/label&gt;
@@ -1582,20 +1591,27 @@ html&gt;body{padding:0}&lt;/style&gt;
   /* Cards Grid */
   #streakline-lab .sl-dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
     gap: 12px;
     width: 100%;
   }
   #streakline-lab .sl-card {
-    background: color-mix(in srgb, var(--foreground) 2.5%, var(--card));
-    border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
     border-radius: 12px;
     padding: 12px 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     min-width: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+  #streakline-lab .sl-card-primary {
+    background: color-mix(in srgb, #0284c7 4%, var(--card));
+    border: 1.5px solid color-mix(in srgb, #0284c7 38%, transparent);
+    box-shadow: 0 2px 8px color-mix(in srgb, #0284c7 8%, transparent);
+  }
+  #streakline-lab .sl-card-secondary {
+    background: color-mix(in srgb, var(--foreground) 1.5%, var(--card));
+    border: 1px dashed color-mix(in srgb, var(--foreground) 18%, transparent);
+    opacity: 0.94;
   }
   #streakline-lab .sl-card-header {
     display: flex;
@@ -1608,14 +1624,47 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-card-title-group {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px;
     min-width: 0;
+  }
+  #streakline-lab .sl-title-with-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
   }
   #streakline-lab .sl-card-title {
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: var(--foreground);
+  }
+  #streakline-lab .sl-priority-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1.5px 6.5px;
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: color-mix(in srgb, #0284c7 16%, transparent);
+    color: #0284c7;
+    border: 1px solid color-mix(in srgb, #0284c7 35%, transparent);
+  }
+  #streakline-lab .sl-fun-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1.5px 6.5px;
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: color-mix(in srgb, var(--foreground) 6%, transparent);
+    color: var(--foreground);
+    opacity: 0.68;
+    border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
   }
   #streakline-lab .sl-card-desc {
     font-size: 11px;
@@ -1637,6 +1686,25 @@ html&gt;body{padding:0}&lt;/style&gt;
     align-items: center;
     gap: 8px;
     cursor: pointer;
+  }
+  #streakline-lab .sl-dye-label {
+    font-weight: 600;
+    color: #0284c7;
+  }
+  #streakline-lab .sl-rate-label-text {
+    font-weight: 600;
+  }
+  #streakline-lab .sl-badge-primary {
+    background: color-mix(in srgb, #0284c7 15%, transparent);
+    border-color: color-mix(in srgb, #0284c7 35%, transparent);
+    color: #0284c7;
+    font-weight: 700;
+  }
+  #streakline-lab .sl-tracer-tip {
+    font-size: 11px;
+    opacity: 0.82;
+    margin-top: 1px;
+    color: color-mix(in srgb, #0284c7 85%, var(--foreground));
   }
   #streakline-lab .sl-label-row {
     display: flex;
@@ -2054,10 +2122,12 @@ html&gt;body{padding:0}&lt;/style&gt;
     font-weight: 600;
   }
 
+  @media (max-width: 680px) {
+    #streakline-lab .sl-dashboard-grid { grid-template-columns: 1fr; }
+  }
   @media (max-width: 440px) {
     #streakline-lab .sl-heading { gap: 6px; }
     #streakline-lab .sl-scene { height: 330px; }
-    #streakline-lab .sl-dashboard-grid { grid-template-columns: 1fr; }
     #streakline-lab .sl-control-deck { flex-direction: column; align-items: stretch; }
     #streakline-lab .sl-actions-deck { justify-content: flex-end; }
   }
@@ -2653,6 +2723,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
