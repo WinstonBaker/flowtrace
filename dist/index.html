@@ -1328,73 +1328,124 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;/script&gt;
 &lt;div id=&quot;streakline-lab&quot;&gt;
   &lt;div class=&quot;sl-heading&quot;&gt;
-    &lt;h2&gt;One pipette. An evolving streakline.&lt;/h2&gt;
-    &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-time&quot;&gt;t = 0.0 s&lt;/span&gt;
+    &lt;div class=&quot;sl-title-group&quot;&gt;
+      &lt;h2&gt;One pipette. An evolving streakline.&lt;/h2&gt;
+      &lt;p class=&quot;sl-subtitle&quot;&gt;Compare streaklines, pathlines, and streamlines in unsteady wave flow&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sl-status-badges&quot;&gt;
+      &lt;span class=&quot;sl-regime-pill&quot; id=&quot;sl-regime-indicator&quot;&gt;⚡ Time-varying wave flow&lt;/span&gt;
+      &lt;span class=&quot;text-small tabular-nums sl-time-pill&quot; id=&quot;sl-time&quot;&gt;t = 0.0 s&lt;/span&gt;
+    &lt;/div&gt;
   &lt;/div&gt;
-  &lt;div class=&quot;viz-controls&quot;&gt;
-    &lt;label class=&quot;form-label&quot; for=&quot;sl-wave&quot;&gt;Wave strength
-      &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-wave-val&quot;&gt;100%&lt;/span&gt;
-      &lt;div class=&quot;sl-slider-container&quot;&gt;
-        &lt;div class=&quot;sl-slider-row&quot;&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-wave&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease wave strength&quot;&gt;−&lt;/button&gt;
-          &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-wave&quot; min=&quot;0&quot; max=&quot;200&quot; step=&quot;10&quot; value=&quot;100&quot;&gt;
-          &lt;/div&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-wave&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase wave strength&quot;&gt;+&lt;/button&gt;
+
+  &lt;div class=&quot;sl-dashboard-grid&quot;&gt;
+    &lt;!-- Flow Dynamics Card --&gt;
+    &lt;div class=&quot;sl-card&quot;&gt;
+      &lt;div class=&quot;sl-card-header&quot;&gt;
+        &lt;div class=&quot;sl-card-title-group&quot;&gt;
+          &lt;span class=&quot;sl-card-title&quot;&gt;Flow Dynamics&lt;/span&gt;
+          &lt;span class=&quot;sl-card-desc&quot;&gt;Adjust velocity wave oscillation&lt;/span&gt;
         &lt;/div&gt;
-        &lt;div class=&quot;sl-presets&quot;&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;0&quot;&gt;0%&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;50&quot;&gt;50%&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;100&quot;&gt;100%&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;150&quot;&gt;150%&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;200&quot;&gt;200%&lt;/button&gt;
-        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-freeze-field&quot;&gt;Freeze velocity field&lt;/button&gt;
       &lt;/div&gt;
-    &lt;/label&gt;
-    &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;Tracer rate
-      &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-rate-val&quot;&gt;0.5 / s&lt;/span&gt;
-      &lt;div class=&quot;sl-slider-container&quot;&gt;
-        &lt;div class=&quot;sl-slider-row&quot;&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
-          &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;0.5&quot; data-max=&quot;1000000&quot; data-rate=&quot;0.5&quot;&gt;
+      &lt;label class=&quot;form-label&quot; for=&quot;sl-wave&quot;&gt;
+        &lt;div class=&quot;sl-label-row&quot;&gt;
+          &lt;span&gt;Wave strength&lt;/span&gt;
+          &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-wave-val&quot;&gt;100%&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sl-slider-container&quot;&gt;
+          &lt;div class=&quot;sl-slider-row&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-wave&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease wave strength&quot;&gt;−&lt;/button&gt;
+            &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
+              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-wave&quot; min=&quot;0&quot; max=&quot;200&quot; step=&quot;10&quot; value=&quot;100&quot;&gt;
+            &lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-wave&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase wave strength&quot;&gt;+&lt;/button&gt;
           &lt;/div&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
+          &lt;div class=&quot;sl-presets&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;0&quot;&gt;0%&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;50&quot;&gt;50%&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;100&quot;&gt;100%&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;150&quot;&gt;150%&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;200&quot;&gt;200%&lt;/button&gt;
+          &lt;/div&gt;
         &lt;/div&gt;
-        &lt;div class=&quot;sl-presets&quot;&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;0.5&quot;&gt;0.5 / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10000&quot;&gt;10k / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100000&quot;&gt;100k / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000000&quot;&gt;1M / s&lt;/button&gt;
+      &lt;/label&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Tracer Injection Card --&gt;
+    &lt;div class=&quot;sl-card&quot;&gt;
+      &lt;div class=&quot;sl-card-header&quot;&gt;
+        &lt;div class=&quot;sl-card-title-group&quot;&gt;
+          &lt;span class=&quot;sl-card-title&quot;&gt;Tracer Injection&lt;/span&gt;
+          &lt;span class=&quot;sl-card-desc&quot;&gt;Release passive dye particles&lt;/span&gt;
         &lt;/div&gt;
+        &lt;label class=&quot;form-check form-switch sl-dye-switch&quot; for=&quot;sl-dye&quot;&gt;
+          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
+          &lt;span class=&quot;form-check-label&quot;&gt;Release dye&lt;/span&gt;
+        &lt;/label&gt;
       &lt;/div&gt;
-    &lt;/label&gt;
-    &lt;div class=&quot;viz-row&quot;&gt;
+      &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
+        &lt;div class=&quot;sl-label-row&quot;&gt;
+          &lt;span&gt;Tracer rate&lt;/span&gt;
+          &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-rate-val&quot;&gt;0.5 / s&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sl-slider-container&quot;&gt;
+          &lt;div class=&quot;sl-slider-row&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
+            &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
+              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;0.5&quot; data-max=&quot;1000000&quot; data-rate=&quot;0.5&quot;&gt;
+            &lt;/div&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sl-presets&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;0.5&quot;&gt;0.5 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10000&quot;&gt;10k / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100000&quot;&gt;100k / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000000&quot;&gt;1M / s&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/label&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Diagnostic Lines &amp; Action Controls Bar --&gt;
+  &lt;div class=&quot;sl-control-deck&quot;&gt;
+    &lt;div class=&quot;sl-lines-deck&quot;&gt;
+      &lt;span class=&quot;sl-deck-label&quot;&gt;Flow Lines:&lt;/span&gt;
+      &lt;div class=&quot;sl-lines-pills&quot;&gt;
+        &lt;label class=&quot;form-check form-switch sl-line-pill sl-pill-streak&quot; for=&quot;sl-line-toggle&quot;&gt;
+          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot;&gt;
+          &lt;span class=&quot;form-check-label&quot;&gt;
+            &lt;span class=&quot;sl-swatch sl-swatch-streak&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;sl-pill-title&quot;&gt;Streakline&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class=&quot;form-check form-switch sl-line-pill sl-pill-path&quot; for=&quot;sl-pathline-toggle&quot;&gt;
+          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-pathline-toggle&quot;&gt;
+          &lt;span class=&quot;form-check-label&quot;&gt;
+            &lt;span class=&quot;sl-swatch sl-swatch-path&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;sl-pill-title&quot;&gt;Pathline&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/label&gt;
+        &lt;label class=&quot;form-check form-switch sl-line-pill sl-pill-stream&quot; for=&quot;sl-streamline-toggle&quot;&gt;
+          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-streamline-toggle&quot;&gt;
+          &lt;span class=&quot;form-check-label&quot;&gt;
+            &lt;span class=&quot;sl-swatch sl-swatch-stream&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;sl-pill-title&quot;&gt;Streamline&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sl-actions-deck&quot;&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;sl-pause&quot;&gt;Pause&lt;/button&gt;
-      &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-freeze-field&quot;&gt;Freeze velocity field&lt;/button&gt;
-      &lt;label class=&quot;form-check form-switch&quot;&gt;
-        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
-        &lt;span class=&quot;form-check-label&quot;&gt;Release dye&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class=&quot;form-check form-switch&quot;&gt;
-        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot;&gt;
-        &lt;span class=&quot;form-check-label&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-streak&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streakline&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class=&quot;form-check form-switch&quot;&gt;
-        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-pathline-toggle&quot;&gt;
-        &lt;span class=&quot;form-check-label&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-path&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Pathline&lt;/span&gt;
-      &lt;/label&gt;
-      &lt;label class=&quot;form-check form-switch&quot;&gt;
-        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-streamline-toggle&quot;&gt;
-        &lt;span class=&quot;form-check-label&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-stream&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streamline&lt;/span&gt;
-      &lt;/label&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-vortex-clear&quot; disabled&gt;Clear swirl&lt;/button&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;sl-reset&quot;&gt;Reset&lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
+
   &lt;svg class=&quot;sl-scene&quot; id=&quot;sl-scene&quot; role=&quot;img&quot; aria-label=&quot;Dye released from a fixed pipette into a flowing channel&quot; aria-describedby=&quot;sl-description&quot;&gt;
     &lt;desc id=&quot;sl-description&quot;&gt;The pipette releases passive tracers into the channel at an adjustable rate. You can adjust wave strength and click or drag anywhere in the water to introduce a swirling vortex. The colored streak joins tracer positions, while arrows indicate the local velocity.&lt;/desc&gt;
     &lt;defs&gt;
@@ -1432,26 +1483,499 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;text id=&quot;sl-inlet&quot; class=&quot;sl-label text-small&quot;&gt;Flow →&lt;/text&gt;
     &lt;text id=&quot;sl-outlet&quot; class=&quot;sl-label text-small&quot; text-anchor=&quot;end&quot;&gt;→&lt;/text&gt;
   &lt;/svg&gt;
+
   &lt;div class=&quot;sl-footer text-small&quot;&gt;
-    &lt;div class=&quot;viz-row sl-legend&quot;&gt;
-      &lt;span&gt;&lt;span class=&quot;sl-swatch sl-swatch-streak&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streakline (dye)&lt;/span&gt;
-      &lt;span&gt;&lt;span class=&quot;sl-swatch sl-swatch-path&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Pathline (particle)&lt;/span&gt;
-      &lt;span&gt;&lt;span class=&quot;sl-swatch sl-swatch-stream&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streamline (tangent)&lt;/span&gt;
-      &lt;span&gt;&lt;span class=&quot;sl-velocity&quot; aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;Local velocity&lt;/span&gt;
-      &lt;span id=&quot;sl-vortex-legend&quot; style=&quot;display:none;align-items:center;gap:6px;&quot;&gt;&lt;span style=&quot;display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px dashed var(--primary,#3b82f6);&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Swirl vortex&lt;/span&gt;
+    &lt;div class=&quot;sl-legend&quot;&gt;
+      &lt;span class=&quot;sl-legend-item&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-streak&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streakline (dye locus)&lt;/span&gt;
+      &lt;span class=&quot;sl-legend-item&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-path&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Pathline (particle history)&lt;/span&gt;
+      &lt;span class=&quot;sl-legend-item&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-stream&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streamline (field tangent)&lt;/span&gt;
+      &lt;span class=&quot;sl-legend-item&quot;&gt;&lt;span class=&quot;sl-velocity&quot; aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;Local velocity&lt;/span&gt;
+      &lt;span id=&quot;sl-vortex-legend&quot; class=&quot;sl-legend-item&quot; style=&quot;display:none;&quot;&gt;&lt;span class=&quot;sl-vortex-dot&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Swirl vortex&lt;/span&gt;
     &lt;/div&gt;
-    &lt;span class=&quot;text-small&quot; style=&quot;opacity:0.75;&quot;&gt;Click/drag water to stir flow&lt;/span&gt;
-    &lt;span class=&quot;tabular-nums&quot; id=&quot;sl-count&quot;&gt;0 tracers in view&lt;/span&gt;
+    &lt;div class=&quot;sl-footer-meta&quot;&gt;
+      &lt;span class=&quot;sl-tip-meta&quot;&gt;Tip: Click or drag water to stir flow &amp;bull; Click pipette to squeeze&lt;/span&gt;
+      &lt;span class=&quot;tabular-nums sl-count-badge&quot; id=&quot;sl-count&quot;&gt;0 tracers in view&lt;/span&gt;
+    &lt;/div&gt;
   &lt;/div&gt;
   &lt;div id=&quot;sl-announcement&quot; class=&quot;sr-only&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;style&gt;
-  #streakline-lab { color: var(--foreground); user-select: none; -webkit-user-select: none; }
-  #streakline-lab .sl-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
-  #streakline-lab h2 { margin: 0; }
-  #streakline-lab .sl-scene { display: block; width: 100%; height: 370px; overflow: visible; cursor: crosshair; touch-action: none; user-select: none; -webkit-user-select: none; }
+  #streakline-lab {
+    color: var(--foreground);
+    user-select: none;
+    -webkit-user-select: none;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #streakline-lab * {
+    box-sizing: border-box;
+  }
+  #streakline-lab .sl-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  #streakline-lab .sl-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  #streakline-lab h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  #streakline-lab .sl-subtitle {
+    margin: 0;
+    font-size: 12.5px;
+    opacity: 0.72;
+    line-height: 1.35;
+  }
+  #streakline-lab .sl-status-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  #streakline-lab .sl-regime-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+    border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent);
+    transition: all 0.2s ease;
+  }
+  #streakline-lab .sl-regime-pill.is-frozen {
+    background: color-mix(in srgb, #6366f1 14%, transparent);
+    color: #4f46e5;
+    border-color: color-mix(in srgb, #6366f1 35%, transparent);
+  }
+  #streakline-lab .sl-time-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    background: color-mix(in srgb, var(--foreground) 7%, transparent);
+    color: var(--foreground);
+    border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  }
+
+  /* Cards Grid */
+  #streakline-lab .sl-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 12px;
+    width: 100%;
+  }
+  #streakline-lab .sl-card {
+    background: color-mix(in srgb, var(--foreground) 2.5%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+  #streakline-lab .sl-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  #streakline-lab .sl-card-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+  #streakline-lab .sl-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--foreground);
+  }
+  #streakline-lab .sl-card-desc {
+    font-size: 11px;
+    opacity: 0.65;
+    line-height: 1.2;
+  }
+  #streakline-lab .sl-btn-compact {
+    padding: 4px 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border-radius: 7px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  #streakline-lab .sl-dye-switch {
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  #streakline-lab .sl-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 3px;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  #streakline-lab .form-label {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    cursor: default;
+  }
+  #streakline-lab .sl-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1.5px 7.5px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+  }
+  #streakline-lab .sl-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+  #streakline-lab .sl-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+  }
+  #streakline-lab .sl-slider-wrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  #streakline-lab .sl-step-btn {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--foreground);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  #streakline-lab .sl-step-btn:hover:not(:disabled) {
+    background: var(--muted);
+    border-color: var(--primary);
+  }
+  #streakline-lab .sl-step-btn:active:not(:disabled) {
+    transform: scale(0.92);
+  }
+  #streakline-lab .sl-step-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  #streakline-lab .form-range {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 26px;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    min-width: 0;
+  }
+  #streakline-lab .form-range::-webkit-slider-runnable-track {
+    height: 7px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--sl-pct, 0%), color-mix(in srgb, var(--foreground) 14%, transparent) var(--sl-pct, 0%), color-mix(in srgb, var(--foreground) 14%, transparent) 100%);
+    transition: background 0.04s ease;
+    border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  }
+  #streakline-lab .form-range::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 19px;
+    height: 19px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid var(--primary);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.24);
+    cursor: grab;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  #streakline-lab .form-range:hover::-webkit-slider-thumb {
+    transform: scale(1.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent);
+  }
+  #streakline-lab .form-range:active::-webkit-slider-thumb {
+    cursor: grabbing;
+    transform: scale(1.22);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 0 4px color-mix(in srgb, var(--primary) 35%, transparent);
+  }
+  #streakline-lab .form-range:focus-visible::-webkit-slider-thumb {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+  #streakline-lab .form-range::-moz-range-track {
+    height: 7px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--foreground) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  }
+  #streakline-lab .form-range::-moz-range-progress {
+    height: 7px;
+    border-radius: 999px;
+    background: var(--primary);
+  }
+  #streakline-lab .form-range::-moz-range-thumb {
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid var(--primary);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.24);
+    cursor: grab;
+    transition: transform 0.12s ease;
+  }
+  #streakline-lab .form-range:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  #streakline-lab .sl-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+  }
+  #streakline-lab .sl-chip {
+    padding: 2px 6.5px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.25;
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+    background: var(--card);
+    color: var(--foreground);
+    opacity: 0.85;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  #streakline-lab .sl-chip:hover:not(:disabled) {
+    opacity: 1;
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 10%, var(--card));
+    color: var(--primary);
+  }
+  #streakline-lab .sl-chip.is-active {
+    opacity: 1;
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 600;
+  }
+  #streakline-lab .sl-chip:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* Control Deck: Flow Lines &amp; Actions */
+  #streakline-lab .sl-control-deck {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--foreground) 2.5%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+    border-radius: 12px;
+  }
+  #streakline-lab .sl-lines-deck {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  #streakline-lab .sl-deck-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.68;
+    white-space: nowrap;
+  }
+  #streakline-lab .sl-lines-pills {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  #streakline-lab .sl-line-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 2.5px 7px;
+    border-radius: 7px;
+    background: var(--card);
+    border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    max-width: 100%;
+  }
+  #streakline-lab .sl-line-pill .form-check-input {
+    margin: 0;
+    width: 26px;
+    height: 15px;
+    cursor: pointer;
+  }
+  #streakline-lab .sl-line-pill:hover {
+    border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
+    background: color-mix(in srgb, var(--foreground) 4%, var(--card));
+  }
+  #streakline-lab .sl-line-pill.is-active.sl-pill-streak {
+    border-color: #0284c7;
+    background: color-mix(in srgb, #0284c7 10%, var(--card));
+  }
+  #streakline-lab .sl-line-pill.is-active.sl-pill-path {
+    border-color: #f59e0b;
+    background: color-mix(in srgb, #f59e0b 10%, var(--card));
+  }
+  #streakline-lab .sl-line-pill.is-active.sl-pill-stream {
+    border-color: #10b981;
+    background: color-mix(in srgb, #10b981 10%, var(--card));
+  }
+  #streakline-lab .sl-pill-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  #streakline-lab .sl-actions-deck {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  #streakline-lab #sl-pause {
+    min-width: 66px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 3.5px 9px;
+  }
+  #streakline-lab #sl-vortex-clear {
+    font-size: 12px;
+    padding: 3.5px 9px;
+  }
+  #streakline-lab #sl-vortex-clear:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+  }
+  #streakline-lab #sl-freeze-field.btn-primary {
+    background: #4f46e5;
+    border-color: #4338ca;
+    color: #ffffff;
+  }
+  #streakline-lab #sl-reset {
+    background: #dc2626;
+    border-color: #b91c1c;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 3.5px 9px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  #streakline-lab #sl-reset:hover {
+    background: #b91c1c;
+    border-color: #991b1b;
+    box-shadow: 0 1px 5px rgba(220, 38, 38, 0.35);
+  }
+  #streakline-lab #sl-reset:active {
+    transform: scale(0.94);
+    background: #991b1b;
+  }
+  #streakline-lab #sl-reset:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4);
+  }
+
+  /* SVG Scene */
+  #streakline-lab .sl-scene {
+    display: block;
+    width: 100%;
+    height: 370px;
+    overflow: visible;
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    border-radius: 8px;
+    background: transparent;
+  }
   #streakline-lab .sl-water { fill: var(--muted); opacity: .38; }
-  #streakline-lab .sl-wall { fill: none; stroke: var(--foreground); stroke-opacity: .20; stroke-width: 1; }
+  #streakline-lab .sl-wall { fill: none; stroke: var(--foreground); stroke-opacity: .22; stroke-width: 1.2; }
   #streakline-lab .sl-arrows { fill: none; stroke: var(--foreground); stroke-opacity: .28; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
   #streakline-lab .sl-motes { fill: none; stroke: var(--foreground); stroke-opacity: .18; stroke-width: 2.2; stroke-linecap: round; }
   #streakline-lab .sl-dye-soft { fill: none; stroke: #0284c7; stroke-opacity: .16; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
@@ -1475,44 +1999,67 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-bulb { fill: var(--secondary); stroke: var(--foreground); stroke-opacity: .46; stroke-width: 1.2; }
   #streakline-lab .sl-source { fill: #0284c7; }
   #streakline-lab .sl-label { fill: var(--foreground); }
-  #streakline-lab .sl-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
-  #streakline-lab .sl-legend &gt; span { display: inline-flex; align-items: center; gap: 8px; }
-  #streakline-lab .sl-swatch { display: inline-block; width: 18px; height: 3px; border-radius: 1.5px; vertical-align: middle; }
+
+  /* Footer &amp; Legend */
+  #streakline-lab .sl-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--foreground) 2%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+    border-radius: 10px;
+  }
+  #streakline-lab .sl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+  }
+  #streakline-lab .sl-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    opacity: 0.9;
+  }
+  #streakline-lab .sl-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 3.5px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
   #streakline-lab .sl-swatch-streak { background: #0284c7; }
   #streakline-lab .sl-swatch-path { background: #f59e0b; }
   #streakline-lab .sl-swatch-stream { background: #10b981; border-top: 2px dashed #10b981; height: 0; }
-  #streakline-lab .form-check-label { display: inline-flex; align-items: center; gap: 6px; }
-  #streakline-lab .sl-velocity { color: var(--foreground); display: inline-block; width: 22px; }
-  #streakline-lab .sl-badge { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent); }
-  #streakline-lab .sl-slider-container { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 5px; width: 100%; box-sizing: border-box; }
-  #streakline-lab .sl-slider-row { display: flex; align-items: center; gap: 8px; width: 100%; }
-  #streakline-lab .sl-step-btn { width: 26px; height: 26px; min-width: 26px; padding: 0; font-size: 14px; font-weight: 600; line-height: 1; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--card); color: var(--foreground); cursor: pointer; user-select: none; -webkit-user-select: none; transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease; }
-  #streakline-lab .sl-step-btn:hover:not(:disabled) { background: var(--muted); border-color: var(--primary); }
-  #streakline-lab .sl-step-btn:active:not(:disabled) { transform: scale(0.92); }
-  #streakline-lab .sl-step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  #streakline-lab .sl-slider-wrapper { position: relative; flex: 1; display: flex; align-items: center; }
-  #streakline-lab .form-range { appearance: none; -webkit-appearance: none; width: 100%; height: 28px; margin: 0; padding: 0; background: transparent !important; cursor: pointer; outline: none; border: none; }
-  #streakline-lab .form-range::-webkit-slider-runnable-track { height: 8px; border-radius: 999px; background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--sl-pct, 0%), color-mix(in srgb, var(--foreground) 12%, transparent) var(--sl-pct, 0%), color-mix(in srgb, var(--foreground) 12%, transparent) 100%); transition: background 0.04s ease; border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
-  #streakline-lab .form-range::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; margin-top: -6px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: grab; transition: transform 0.12s ease, box-shadow 0.12s ease; }
-  #streakline-lab .form-range:hover::-webkit-slider-thumb { transform: scale(1.15); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent); }
-  #streakline-lab .form-range:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.22); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 4px color-mix(in srgb, var(--primary) 35%, transparent); }
-  #streakline-lab .form-range:focus-visible::-webkit-slider-thumb { border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 40%, transparent); }
-  #streakline-lab .form-range::-moz-range-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--foreground) 12%, transparent); border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
-  #streakline-lab .form-range::-moz-range-progress { height: 8px; border-radius: 999px; background: var(--primary); }
-  #streakline-lab .form-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: grab; transition: transform 0.12s ease; }
-  #streakline-lab .form-range:disabled { opacity: 0.45; cursor: not-allowed; }
-  #streakline-lab .sl-presets { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
-  #streakline-lab .sl-chip { padding: 1.5px 5.5px; font-size: 10.5px; font-weight: 500; line-height: 1.2; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); opacity: 0.85; cursor: pointer; user-select: none; -webkit-user-select: none; transition: all 0.15s ease; }
-  #streakline-lab .sl-chip:hover:not(:disabled) { opacity: 1; border-color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, var(--card)); color: var(--primary); }
-  #streakline-lab .sl-chip.is-active { opacity: 1; border-color: var(--primary); background: var(--primary); color: #ffffff; font-weight: 600; }
-  #streakline-lab .sl-chip:disabled { opacity: 0.35; cursor: not-allowed; }
-  #streakline-lab #sl-reset { background: #dc2626; border-color: #b91c1c; color: #ffffff; font-weight: 500; cursor: pointer; transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; }
-  #streakline-lab #sl-reset:hover { background: #b91c1c; border-color: #991b1b; box-shadow: 0 1px 4px rgba(220, 38, 38, 0.35); }
-  #streakline-lab #sl-reset:active { transform: scale(0.94); background: #991b1b; }
-  #streakline-lab #sl-reset:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4); }
+  #streakline-lab .sl-velocity { color: var(--foreground); display: inline-block; width: 16px; font-weight: bold; }
+  #streakline-lab .sl-vortex-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; border: 1.5px dashed var(--primary, #3b82f6); }
+  #streakline-lab .sl-footer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 11.5px;
+    opacity: 0.78;
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+    padding-top: 6px;
+  }
+  #streakline-lab .sl-tip-meta {
+    font-style: italic;
+  }
+  #streakline-lab .sl-count-badge {
+    font-weight: 600;
+  }
+
   @media (max-width: 440px) {
     #streakline-lab .sl-heading { gap: 6px; }
     #streakline-lab .sl-scene { height: 330px; }
+    #streakline-lab .sl-dashboard-grid { grid-template-columns: 1fr; }
+    #streakline-lab .sl-control-deck { flex-direction: column; align-items: stretch; }
+    #streakline-lab .sl-actions-deck { justify-content: flex-end; }
   }
 &lt;/style&gt;
 &lt;script&gt;
@@ -1522,6 +2069,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   const svg = el(&#x27;sl-scene&#x27;);
   const pause = el(&#x27;sl-pause&#x27;);
   const freezeBtn = el(&#x27;sl-freeze-field&#x27;);
+  const regimeIndicator = el(&#x27;sl-regime-indicator&#x27;);
   const release = el(&#x27;sl-dye&#x27;);
   const rate = el(&#x27;sl-rate&#x27;);
   const rateVal = el(&#x27;sl-rate-val&#x27;);
@@ -1778,7 +2326,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       el(&#x27;sl-pathline-line&#x27;).setAttribute(&#x27;d&#x27;, &#x27;&#x27;);
     }
     el(&#x27;sl-pathline-head&#x27;).style.display = &#x27;none&#x27;;
-        let totalTracers = 0;
+    let totalTracers = 0;
     for (let i = 0; i &lt; particles.length; i++) {
       if (particles[i].x &lt;= L) totalTracers += (particles[i].weight || 1);
     }
@@ -1803,12 +2351,26 @@ html&gt;body{padding:0}&lt;/style&gt;
       freezeBtn.classList.toggle(&#x27;btn-primary&#x27;, state.frozenField);
       freezeBtn.classList.toggle(&#x27;btn-secondary&#x27;, !state.frozenField);
     }
+    if (regimeIndicator) {
+      regimeIndicator.textContent = state.frozenField ? &#x27;❄️ Frozen field (Steady flow)&#x27; : &#x27;⚡ Time-varying wave flow&#x27;;
+      regimeIndicator.classList.toggle(&#x27;is-frozen&#x27;, state.frozenField);
+    }
     pause.textContent = state.paused ? &#x27;Play&#x27; : &#x27;Pause&#x27;;
     pause.setAttribute(&#x27;aria-label&#x27;, state.paused ? &#x27;Play flow simulation&#x27; : &#x27;Pause flow simulation&#x27;);
     release.checked = state.injecting;
     lineToggle.checked = state.line;
-    if (pathlineToggle) pathlineToggle.checked = state.pathline;
-    if (streamlineToggle) streamlineToggle.checked = state.streamline;
+    const streakPill = lineToggle.closest(&#x27;.sl-line-pill&#x27;);
+    if (streakPill) streakPill.classList.toggle(&#x27;is-active&#x27;, state.line);
+    if (pathlineToggle) {
+      pathlineToggle.checked = state.pathline;
+      const pathPill = pathlineToggle.closest(&#x27;.sl-line-pill&#x27;);
+      if (pathPill) pathPill.classList.toggle(&#x27;is-active&#x27;, state.pathline);
+    }
+    if (streamlineToggle) {
+      streamlineToggle.checked = state.streamline;
+      const streamPill = streamlineToggle.closest(&#x27;.sl-line-pill&#x27;);
+      if (streamPill) streamPill.classList.toggle(&#x27;is-active&#x27;, state.streamline);
+    }
     rate.value = rateToPos(state.rate);
     rate.setAttribute(&#x27;data-rate&#x27;, state.rate);
     rateVal.textContent = formatRate(state.rate);
@@ -1942,6 +2504,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   document.addEventListener(&#x27;selectstart&#x27;, e =&gt; { if (draggingVortex) e.preventDefault(); });
   lineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
     state.line = lineToggle.checked;
+    syncControls();
     draw();
     save();
     announce(state.line ? &#x27;Streakline turned on.&#x27; : &#x27;Streakline turned off.&#x27;);
@@ -1949,6 +2512,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   if (pathlineToggle) {
     pathlineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
       state.pathline = pathlineToggle.checked;
+      syncControls();
       draw();
       save();
       announce(state.pathline ? &#x27;Pathline turned on.&#x27; : &#x27;Pathline turned off.&#x27;);
@@ -1957,6 +2521,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   if (streamlineToggle) {
     streamlineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
       state.streamline = streamlineToggle.checked;
+      syncControls();
       draw();
       save();
       announce(state.streamline ? &#x27;Streamline turned on.&#x27; : &#x27;Streamline turned off.&#x27;);
@@ -2088,6 +2653,9 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
+
+
 
 
 
