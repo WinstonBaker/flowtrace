@@ -1643,8 +1643,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (!state.streamline) return &#x27;&#x27;;
     let curr = { x: SOURCE.x, y: SOURCE.y };
     let d = &#x27;M&#x27; + xy(curr);
-    const dTau = 0.08;
-    for (let s = 0; s &lt; 160; s++) {
+    const dTau = 0.05;
+    for (let s = 0; s &lt; 1200; s++) {
       const a = velocity(curr.x, curr.y, t);
       const b = velocity(curr.x + a.x * dTau / 2, curr.y + a.y * dTau / 2, t);
       const c = velocity(curr.x + b.x * dTau / 2, curr.y + b.y * dTau / 2, t);
@@ -1652,7 +1652,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       curr.x += dTau * (a.x + 2 * b.x + 2 * c.x + k.x) / 6;
       curr.y += dTau * (a.y + 2 * b.y + 2 * c.y + k.y) / 6;
       d += &#x27;L&#x27; + xy(curr);
-      if (curr.x &gt; L + 0.1 || curr.x &lt; -0.1 || curr.y &lt; 0 || curr.y &gt; H) break;
+      if (curr.x &gt;= L || curr.x &lt; -0.2 || curr.y &lt;= 0 || curr.y &gt;= H) break;
     }
     return d;
   }
@@ -2062,6 +2062,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
