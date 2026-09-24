@@ -1364,7 +1364,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;div class=&quot;sl-slider-row&quot;&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
           &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0.5&quot; max=&quot;100&quot; step=&quot;0.5&quot; value=&quot;4&quot;&gt;
+            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;210&quot; data-min=&quot;0.5&quot; data-max=&quot;10000&quot; data-rate=&quot;4&quot;&gt;
           &lt;/div&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
         &lt;/div&gt;
@@ -1372,9 +1372,10 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1&quot;&gt;1 / s&lt;/button&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10&quot;&gt;10 / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;25&quot;&gt;25 / s&lt;/button&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
-          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100&quot;&gt;100 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;200&quot;&gt;200 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10000&quot;&gt;10k / s&lt;/button&gt;
         &lt;/div&gt;
       &lt;/div&gt;
     &lt;/label&gt;
@@ -1483,7 +1484,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .form-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: grab; transition: transform 0.12s ease; }
   #streakline-lab .form-range:disabled { opacity: 0.45; cursor: not-allowed; }
   #streakline-lab .sl-presets { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
-  #streakline-lab .sl-chip { padding: 2px 7px; font-size: 11px; font-weight: 500; line-height: 1.2; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); opacity: 0.85; cursor: pointer; user-select: none; -webkit-user-select: none; transition: all 0.15s ease; }
+  #streakline-lab .sl-chip { padding: 1.5px 5.5px; font-size: 10.5px; font-weight: 500; line-height: 1.2; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); opacity: 0.85; cursor: pointer; user-select: none; -webkit-user-select: none; transition: all 0.15s ease; }
   #streakline-lab .sl-chip:hover:not(:disabled) { opacity: 1; border-color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, var(--card)); color: var(--primary); }
   #streakline-lab .sl-chip.is-active { opacity: 1; border-color: var(--primary); background: var(--primary); color: #ffffff; font-weight: 600; }
   #streakline-lab .sl-chip:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -1518,6 +1519,44 @@ html&gt;body{padding:0}&lt;/style&gt;
   let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0.5;
   let width = 736, height = 370, top = 134, bottom = 342;
   let last = null, accumulated = 0, uiClock = -1;
+  function formatRate(r) {
+    if (r &gt;= 1000) return (Math.round(r)).toLocaleString() + &#x27; / s&#x27;;
+    return (r &lt; 10 &amp;&amp; r % 1 !== 0 ? r.toFixed(1) : Math.round(r)) + &#x27; / s&#x27;;
+  }
+  function posToRate(pos) {
+    const t = Math.max(0, Math.min(1000, Number(pos))) / 1000;
+    const raw = 0.5 * Math.pow(20000, t);
+    if (raw &lt;= 0.5) return 0.5;
+    if (raw &gt;= 10000) return 10000;
+    if (raw &lt; 10) return Math.round(raw * 2) / 2;
+    if (raw &lt; 100) return Math.round(raw);
+    if (raw &lt; 1000) return Math.round(raw / 10) * 10;
+    return Math.round(raw / 100) * 100;
+  }
+  function rateToPos(r) {
+    const clamped = Math.max(0.5, Math.min(10000, Number(r)));
+    const t = Math.log(clamped / 0.5) / Math.log(20000);
+    return Math.round(t * 1000);
+  }
+  function stepRate(currentRate, dir) {
+    if (dir &gt; 0) {
+      if (currentRate &lt; 1) return 1;
+      if (currentRate &lt; 10) return currentRate + 1;
+      if (currentRate &lt; 50) return currentRate + 5;
+      if (currentRate &lt; 200) return currentRate + 25;
+      if (currentRate &lt; 1000) return currentRate + 100;
+      if (currentRate &lt; 5000) return currentRate + 500;
+      return Math.min(10000, currentRate + 1000);
+    } else {
+      if (currentRate &lt;= 1) return 0.5;
+      if (currentRate &lt;= 10) return currentRate - 1;
+      if (currentRate &lt;= 50) return currentRate - 5;
+      if (currentRate &lt;= 200) return currentRate - 25;
+      if (currentRate &lt;= 1000) return currentRate - 100;
+      if (currentRate &lt;= 5000) return currentRate - 500;
+      return Math.max(0.5, currentRate - 1000);
+    }
+  }
   const settingsFrom = value =&gt; value?.modelContent?.streakline || value?.streakline;
   function applySettings(value) {
     const saved = settingsFrom(value);
@@ -1528,7 +1567,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.line === &#x27;boolean&#x27;) state.line = saved.line;
     if (typeof saved.waveStrength === &#x27;number&#x27; &amp;&amp; saved.waveStrength &gt;= 0 &amp;&amp; saved.waveStrength &lt;= 2) state.waveStrength = saved.waveStrength;
     const r = Number(saved.rate ?? saved.releaseRate);
-    if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 100) state.rate = r;
+    if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 10000) state.rate = r;
   }
   applySettings(window.openai?.widgetState);
   function save() {
@@ -1586,6 +1625,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
     for (const p of particles) advect(p, t, DT);
     particles = particles.filter(p =&gt; p.x &lt;= L + .2 &amp;&amp; p.y &gt;= 0 &amp;&amp; p.y &lt;= H);
+    if (particles.length &gt; 5000) particles = particles.filter((_, idx) =&gt; idx % 2 === 0);
     for (const p of motes) {
       advect(p, t, DT);
       if (p.x &gt; L + .1) p.x -= L + .2;
@@ -1637,7 +1677,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-arrows&#x27;).setAttribute(&#x27;d&#x27;, arrows);
     el(&#x27;sl-motes&#x27;).setAttribute(&#x27;d&#x27;, motes.map(p =&gt; &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;).join(&#x27;&#x27;));
     let path = &#x27;&#x27;, dots = &#x27;&#x27;, previousRun = null;
-    const dotStride = state.line ? (state.rate &lt;= 15 ? 1 : Math.max(1, Math.round(state.rate / 4))) : 1;
+    const dotStride = state.line ? (state.rate &lt;= 15 ? 1 : Math.max(1, Math.round(state.rate / 4))) : (state.rate &lt;= 50 ? 1 : Math.max(1, Math.round(state.rate / 40)));
     for (const p of particles) {
       if (state.line) {
         path += (p.run === previousRun ? &#x27;L&#x27; : &#x27;M&#x27;) + xy(p);
@@ -1649,7 +1689,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-dots&#x27;).setAttribute(&#x27;d&#x27;, dots);
-    el(&#x27;sl-count&#x27;).textContent = `${particles.length} tracers in view`;
+    el(&#x27;sl-count&#x27;).textContent = `${particles.length.toLocaleString()} tracers in view`;
     if (vortex.active) {
       el(&#x27;sl-vortex&#x27;).style.display = &#x27;&#x27;;
       el(&#x27;sl-vortex&#x27;).setAttribute(&#x27;transform&#x27;, `translate(${n(px(vortex.x))},${n(py(vortex.y))})`);
@@ -1668,10 +1708,11 @@ html&gt;body{padding:0}&lt;/style&gt;
     pause.setAttribute(&#x27;aria-label&#x27;, state.paused ? &#x27;Play flow simulation&#x27; : &#x27;Pause flow simulation&#x27;);
     release.checked = state.injecting;
     lineToggle.checked = state.line;
-    rate.value = state.rate;
-    rateVal.textContent = `${state.rate} / s`;
+    rate.value = rateToPos(state.rate);
+    rate.setAttribute(&#x27;data-rate&#x27;, state.rate);
+    rateVal.textContent = formatRate(state.rate);
     if (!isPipetteHeld) {
-      el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? `${state.rate} ${state.rate === 1 ? &#x27;tracer&#x27; : &#x27;tracers&#x27;} / s` : &#x27;Dye off&#x27;;
+      el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? formatRate(state.rate) : &#x27;Dye off&#x27;;
       el(&#x27;sl-source&#x27;).style.opacity = state.injecting ? &#x27;1&#x27; : &#x27;.3&#x27;;
     }
     wave.value = Math.round(state.waveStrength * 100);
@@ -1689,13 +1730,23 @@ html&gt;body{padding:0}&lt;/style&gt;
     const val = Number(input.value);
     const pct = Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
     input.style.setProperty(&#x27;--sl-pct&#x27;, pct.toFixed(1) + &#x27;%&#x27;);
-    root.querySelectorAll(&quot;.sl-chip[data-for=&#x27;&quot; + input.id + &quot;&#x27;]&quot;).forEach(chip =&gt; {
-      chip.classList.toggle(&#x27;is-active&#x27;, Number(chip.dataset.val) === val);
-      chip.disabled = input.disabled;
-    });
-    root.querySelectorAll(&quot;.sl-step-btn[data-step-for=&#x27;&quot; + input.id + &quot;&#x27;]&quot;).forEach(btn =&gt; {
-      btn.disabled = input.disabled;
-    });
+    if (input.id === &#x27;sl-rate&#x27;) {
+      root.querySelectorAll(&quot;.sl-chip[data-for=&#x27;sl-rate&#x27;]&quot;).forEach(chip =&gt; {
+        chip.classList.toggle(&#x27;is-active&#x27;, Number(chip.dataset.val) === state.rate);
+        chip.disabled = input.disabled;
+      });
+      root.querySelectorAll(&quot;.sl-step-btn[data-step-for=&#x27;sl-rate&#x27;]&quot;).forEach(btn =&gt; {
+        btn.disabled = input.disabled;
+      });
+    } else {
+      root.querySelectorAll(&quot;.sl-chip[data-for=&#x27;&quot; + input.id + &quot;&#x27;]&quot;).forEach(chip =&gt; {
+        chip.classList.toggle(&#x27;is-active&#x27;, Number(chip.dataset.val) === val);
+        chip.disabled = input.disabled;
+      });
+      root.querySelectorAll(&quot;.sl-step-btn[data-step-for=&#x27;&quot; + input.id + &quot;&#x27;]&quot;).forEach(btn =&gt; {
+        btn.disabled = input.disabled;
+      });
+    }
   }
   const announce = text =&gt; { el(&#x27;sl-announcement&#x27;).textContent = text; };
   wave.addEventListener(&#x27;input&#x27;, () =&gt; {
@@ -1743,7 +1794,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     particles.push({ ...SOURCE, born: t, run, id: released++ });
     injectAccumulator = 0;
     el(&#x27;sl-source&#x27;).style.opacity = &#x27;1&#x27;;
-    el(&#x27;sl-rate-label&#x27;).textContent = `${state.rate} ${state.rate === 1 ? &#x27;tracer&#x27; : &#x27;tracers&#x27;} / s`;
+    el(&#x27;sl-rate-label&#x27;).textContent = formatRate(state.rate);
     try { pipette.setPointerCapture(e.pointerId); } catch {}
     draw();
     announce(&#x27;Pipette squeezed; firing dye.&#x27;);
@@ -1787,12 +1838,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     announce(state.line ? &#x27;Connecting lines turned on.&#x27; : &#x27;Connecting lines turned off.&#x27;);
   });
   rate.addEventListener(&#x27;input&#x27;, () =&gt; {
-    state.rate = Number(rate.value);
+    state.rate = posToRate(rate.value);
+    rate.setAttribute(&#x27;data-rate&#x27;, state.rate);
     syncControls();
     save();
   });
   rate.addEventListener(&#x27;change&#x27;, () =&gt; {
-    announce(`Tracer rate set to ${state.rate} tracers per second.`);
+    announce(`Tracer rate set to ${formatRate(state.rate)}.`);
   });
   root.querySelectorAll(&#x27;.sl-step-btn&#x27;).forEach(btn =&gt; {
     btn.addEventListener(&#x27;click&#x27;, () =&gt; {
@@ -1800,14 +1852,23 @@ html&gt;body{padding:0}&lt;/style&gt;
       const target = el(targetId);
       if (!target || target.disabled) return;
       const dir = Number(btn.dataset.dir);
-      const step = Number(target.step) || 1;
-      const min = Number(target.min) || 0;
-      const max = Number(target.max) || 100;
-      let next = Math.round((Number(target.value) + dir * step) * 100) / 100;
-      next = Math.max(min, Math.min(max, next));
-      target.value = next;
-      target.dispatchEvent(new Event(&#x27;input&#x27;, { bubbles: true }));
-      target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+      if (targetId === &#x27;sl-rate&#x27;) {
+        state.rate = stepRate(state.rate, dir);
+        target.value = rateToPos(state.rate);
+        target.setAttribute(&#x27;data-rate&#x27;, state.rate);
+        syncControls();
+        save();
+        target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+      } else {
+        const step = Number(target.step) || 1;
+        const min = Number(target.min) || 0;
+        const max = Number(target.max) || 100;
+        let next = Math.round((Number(target.value) + dir * step) * 100) / 100;
+        next = Math.max(min, Math.min(max, next));
+        target.value = next;
+        target.dispatchEvent(new Event(&#x27;input&#x27;, { bubbles: true }));
+        target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+      }
     });
   });
   root.querySelectorAll(&#x27;.sl-chip&#x27;).forEach(chip =&gt; {
@@ -1815,9 +1876,18 @@ html&gt;body{padding:0}&lt;/style&gt;
       const targetId = chip.dataset.for;
       const target = el(targetId);
       if (!target || target.disabled) return;
-      target.value = chip.dataset.val;
-      target.dispatchEvent(new Event(&#x27;input&#x27;, { bubbles: true }));
-      target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+      if (targetId === &#x27;sl-rate&#x27;) {
+        state.rate = Number(chip.dataset.val);
+        target.value = rateToPos(state.rate);
+        target.setAttribute(&#x27;data-rate&#x27;, state.rate);
+        syncControls();
+        save();
+        target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+      } else {
+        target.value = chip.dataset.val;
+        target.dispatchEvent(new Event(&#x27;input&#x27;, { bubbles: true }));
+        target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+      }
     });
   });
   pause.addEventListener(&#x27;click&#x27;, () =&gt; {
@@ -1865,6 +1935,8 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
+
 
 
 
