@@ -6,7 +6,7 @@
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Streakline Lab</title>
-<style>:root{color-scheme:light;background:#ffffff}html,body{margin:0;background:#ffffff}body{box-sizing:border-box;padding:1rem;background:#ffffff}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0;background:#ffffff}</style>
+<style>:root{color-scheme:light dark;background:light-dark(#ffffff,#181818)}html,body{margin:0;background:light-dark(#ffffff,#181818)}body{box-sizing:border-box;padding:1rem;background:light-dark(#ffffff,#181818)}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0;background:light-dark(#ffffff,#181818)}:root[data-theme="dark"],:root[data-theme="dark"] body,:root[data-theme="dark"] iframe{background:#181818;color-scheme:dark}:root[data-theme="light"],:root[data-theme="light"] body,:root[data-theme="light"] iframe{background:#ffffff;color-scheme:light}</style>
 </head>
 <body>
 <iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Streakline Lab" data-srcdoc="&lt;!doctype html&gt;
@@ -2266,9 +2266,13 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
   function applyTheme(t) {
     const isDark = (t === &#x27;dark&#x27;);
+    const bg = isDark ? &#x27;#181818&#x27; : &#x27;#ffffff&#x27;;
     document.documentElement.dataset.theme = t;
     document.documentElement.style.colorScheme = t;
+    document.documentElement.style.setProperty(&#x27;background&#x27;, bg, &#x27;important&#x27;);
+    document.body.style.setProperty(&#x27;background&#x27;, bg, &#x27;important&#x27;);
     root.style.colorScheme = t;
+    root.style.setProperty(&#x27;background&#x27;, bg, &#x27;important&#x27;);
     root.classList.toggle(&#x27;sl-theme-dark&#x27;, isDark);
     if (themeIcon) themeIcon.textContent = isDark ? &#x27;☀️&#x27; : &#x27;🌙&#x27;;
     if (themeText) themeText.textContent = isDark ? &#x27;Light&#x27; : &#x27;Dark&#x27;;
@@ -2277,6 +2281,9 @@ html&gt;body{padding:0}&lt;/style&gt;
       themeToggle.setAttribute(&#x27;title&#x27;, isDark ? &#x27;Switch to light mode&#x27; : &#x27;Switch to dark mode&#x27;);
       themeToggle.classList.toggle(&#x27;is-dark&#x27;, isDark);
     }
+    try {
+      window.parent.postMessage({ type: &#x27;theme-change&#x27;, theme: t }, &#x27;*&#x27;);
+    } catch {}
   }
   function toggleTheme() {
     const current = (document.documentElement.dataset.theme === &#x27;dark&#x27; || root.style.colorScheme === &#x27;dark&#x27;) ? &#x27;dark&#x27; : &#x27;light&#x27;;
@@ -2904,6 +2911,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 
 
+
 &lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
@@ -3453,6 +3461,25 @@ html&gt;body{padding:0}&lt;/style&gt;
       JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
       "<\/script>",
   );
+    const updateHostTheme = (t) => {
+    document.documentElement.dataset.theme = t;
+    document.documentElement.style.colorScheme = t;
+    const bg = t === "dark" ? "#181818" : "#ffffff";
+    document.documentElement.style.background = bg;
+    document.body.style.background = bg;
+    if (frame) frame.style.background = bg;
+  };
+  globalThis.addEventListener("message", (event) => {
+    if (event.data?.type === "theme-change") {
+      updateHostTheme(event.data.theme);
+    }
+  });
+  const savedHostTheme = (() => {
+    try { return localStorage.getItem("sl-theme"); } catch { return null; }
+  })() || (globalThis.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  if (savedHostTheme === "dark") {
+    updateHostTheme("dark");
+  }
   delete frame.dataset.srcdoc;
 })();
 </script>
