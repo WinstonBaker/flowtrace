@@ -1387,7 +1387,15 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;/label&gt;
       &lt;label class=&quot;form-check form-switch&quot;&gt;
         &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot;&gt;
-        &lt;span class=&quot;form-check-label&quot;&gt;Connecting line&lt;/span&gt;
+        &lt;span class=&quot;form-check-label&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-streak&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streakline&lt;/span&gt;
+      &lt;/label&gt;
+      &lt;label class=&quot;form-check form-switch&quot;&gt;
+        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-pathline-toggle&quot;&gt;
+        &lt;span class=&quot;form-check-label&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-path&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Pathline&lt;/span&gt;
+      &lt;/label&gt;
+      &lt;label class=&quot;form-check form-switch&quot;&gt;
+        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-streamline-toggle&quot;&gt;
+        &lt;span class=&quot;form-check-label&quot;&gt;&lt;span class=&quot;sl-swatch sl-swatch-stream&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streamline&lt;/span&gt;
       &lt;/label&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-vortex-clear&quot; disabled&gt;Clear swirl&lt;/button&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;sl-reset&quot;&gt;Reset&lt;/button&gt;
@@ -1404,9 +1412,14 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;g clip-path=&quot;url(#sl-water-clip)&quot;&gt;
       &lt;path id=&quot;sl-arrows&quot; class=&quot;sl-arrows&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-motes&quot; class=&quot;sl-motes&quot;&gt;&lt;/path&gt;
+      &lt;path id=&quot;sl-streamline-soft&quot; class=&quot;sl-streamline-soft&quot;&gt;&lt;/path&gt;
+      &lt;path id=&quot;sl-streamline-line&quot; class=&quot;sl-streamline-line&quot;&gt;&lt;/path&gt;
+      &lt;path id=&quot;sl-pathline-soft&quot; class=&quot;sl-pathline-soft&quot;&gt;&lt;/path&gt;
+      &lt;path id=&quot;sl-pathline-line&quot; class=&quot;sl-pathline-line&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-dye-soft&quot; class=&quot;sl-dye-soft&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-dye-line&quot; class=&quot;sl-dye-line&quot;&gt;&lt;/path&gt;
       &lt;path id=&quot;sl-dye-dots&quot; class=&quot;sl-dye-dots&quot;&gt;&lt;/path&gt;
+      &lt;circle id=&quot;sl-pathline-head&quot; class=&quot;sl-pathline-head&quot; r=&quot;3.5&quot; style=&quot;display:none;&quot;&gt;&lt;/circle&gt;
       &lt;g id=&quot;sl-vortex&quot; style=&quot;display:none;pointer-events:none;&quot;&gt;
         &lt;circle class=&quot;sl-vortex-glow&quot; r=&quot;22&quot;&gt;&lt;/circle&gt;
         &lt;circle id=&quot;sl-vortex-ring&quot; class=&quot;sl-vortex-ring&quot; r=&quot;14&quot;&gt;&lt;/circle&gt;
@@ -1428,7 +1441,9 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;/svg&gt;
   &lt;div class=&quot;sl-footer text-small&quot;&gt;
     &lt;div class=&quot;viz-row sl-legend&quot;&gt;
-      &lt;span&gt;&lt;span class=&quot;sl-swatch&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Dye streakline&lt;/span&gt;
+      &lt;span&gt;&lt;span class=&quot;sl-swatch sl-swatch-streak&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streakline (dye)&lt;/span&gt;
+      &lt;span&gt;&lt;span class=&quot;sl-swatch sl-swatch-path&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Pathline (particle)&lt;/span&gt;
+      &lt;span&gt;&lt;span class=&quot;sl-swatch sl-swatch-stream&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Streamline (tangent)&lt;/span&gt;
       &lt;span&gt;&lt;span class=&quot;sl-velocity&quot; aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;Local velocity&lt;/span&gt;
       &lt;span id=&quot;sl-vortex-legend&quot; style=&quot;display:none;align-items:center;gap:6px;&quot;&gt;&lt;span style=&quot;display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px dashed var(--primary,#3b82f6);&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Swirl vortex&lt;/span&gt;
     &lt;/div&gt;
@@ -1446,9 +1461,14 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-wall { fill: none; stroke: var(--foreground); stroke-opacity: .20; stroke-width: 1; }
   #streakline-lab .sl-arrows { fill: none; stroke: var(--foreground); stroke-opacity: .28; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
   #streakline-lab .sl-motes { fill: none; stroke: var(--foreground); stroke-opacity: .18; stroke-width: 2.2; stroke-linecap: round; }
-  #streakline-lab .sl-dye-soft { fill: none; stroke: var(--viz-series-1); stroke-opacity: .16; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
-  #streakline-lab .sl-dye-line { fill: none; stroke: var(--viz-series-1); stroke-opacity: .82; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-  #streakline-lab .sl-dye-dots { fill: none; stroke: var(--viz-series-1); stroke-width: 4; stroke-linecap: round; }
+  #streakline-lab .sl-dye-soft { fill: none; stroke: #0284c7; stroke-opacity: .16; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+  #streakline-lab .sl-dye-line { fill: none; stroke: #0284c7; stroke-opacity: .85; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  #streakline-lab .sl-dye-dots { fill: none; stroke: #0284c7; stroke-width: 4; stroke-linecap: round; }
+  #streakline-lab .sl-pathline-soft { fill: none; stroke: #f59e0b; stroke-opacity: .20; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+  #streakline-lab .sl-pathline-line { fill: none; stroke: #f59e0b; stroke-opacity: .92; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  #streakline-lab .sl-pathline-head { fill: #f59e0b; stroke: #ffffff; stroke-width: 1.5; filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.7)); }
+  #streakline-lab .sl-streamline-soft { fill: none; stroke: #10b981; stroke-opacity: .20; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+  #streakline-lab .sl-streamline-line { fill: none; stroke: #10b981; stroke-opacity: .95; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 3; }
   #streakline-lab .sl-vortex-glow { fill: var(--primary); fill-opacity: .20; }
   #streakline-lab .sl-vortex-ring { fill: none; stroke: var(--primary); stroke-opacity: .85; stroke-width: 1.5; stroke-dasharray: 4 3; }
   #streakline-lab .sl-vortex-center { fill: var(--primary); }
@@ -1458,13 +1478,17 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab #sl-source { transition: transform 0.08s ease; transform-origin: center; transform-box: fill-box; }
   #streakline-lab #sl-pipette.sl-squeezed #sl-source { transform: scale(1.6); filter: drop-shadow(0 0 3px var(--viz-series-1)); }
   #streakline-lab .sl-glass { fill: var(--background); fill-opacity: .78; stroke: var(--foreground); stroke-opacity: .48; stroke-width: 1.2; }
-  #streakline-lab .sl-reservoir { fill: var(--viz-series-1); fill-opacity: .48; }
+  #streakline-lab .sl-reservoir { fill: #0284c7; fill-opacity: .48; }
   #streakline-lab .sl-bulb { fill: var(--secondary); stroke: var(--foreground); stroke-opacity: .46; stroke-width: 1.2; }
-  #streakline-lab .sl-source { fill: var(--viz-series-1); }
+  #streakline-lab .sl-source { fill: #0284c7; }
   #streakline-lab .sl-label { fill: var(--foreground); }
   #streakline-lab .sl-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px; }
   #streakline-lab .sl-legend &gt; span { display: inline-flex; align-items: center; gap: 8px; }
-  #streakline-lab .sl-swatch { display: inline-block; width: 22px; height: 3px; background: var(--viz-series-1); }
+  #streakline-lab .sl-swatch { display: inline-block; width: 18px; height: 3px; border-radius: 1.5px; vertical-align: middle; }
+  #streakline-lab .sl-swatch-streak { background: #0284c7; }
+  #streakline-lab .sl-swatch-path { background: #f59e0b; }
+  #streakline-lab .sl-swatch-stream { background: #10b981; border-top: 2px dashed #10b981; height: 0; }
+  #streakline-lab .form-check-label { display: inline-flex; align-items: center; gap: 6px; }
   #streakline-lab .sl-velocity { color: var(--foreground); display: inline-block; width: 22px; }
   #streakline-lab .sl-badge { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent); }
   #streakline-lab .sl-slider-container { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 5px; width: 100%; box-sizing: border-box; }
@@ -1509,6 +1533,8 @@ html&gt;body{padding:0}&lt;/style&gt;
   const rate = el(&#x27;sl-rate&#x27;);
   const rateVal = el(&#x27;sl-rate-val&#x27;);
   const lineToggle = el(&#x27;sl-line-toggle&#x27;);
+  const pathlineToggle = el(&#x27;sl-pathline-toggle&#x27;);
+  const streamlineToggle = el(&#x27;sl-streamline-toggle&#x27;);
   const wave = el(&#x27;sl-wave&#x27;);
   const waveVal = el(&#x27;sl-wave-val&#x27;);
   const clearVortex = el(&#x27;sl-vortex-clear&#x27;);
@@ -1516,12 +1542,13 @@ html&gt;body{padding:0}&lt;/style&gt;
   const pipette = el(&#x27;sl-pipette&#x27;);
   let isPipetteHeld = false;
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
-  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: false, rate: 4, line: false, waveStrength: 1 };
+  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: false, rate: 4, line: false, pathline: false, streamline: false, waveStrength: 1 };
   const vortex = { active: false, x: 6, y: 2, gamma: 1.2 };
   const L = 12, H = 4, U = 0.65, B = 0.50, K = 0.82, OMEGA = 0.58;
   const SOURCE = { x: 1.28, y: 2.65 };
   const DT = 1 / 120;
   let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0.5;
+  let pathParticle = { ...SOURCE }, pathHistory = [{ ...SOURCE }];
   let width = 736, height = 370, top = 134, bottom = 342;
   let last = null, accumulated = 0, uiClock = -1;
   function formatRate(r) {
@@ -1570,6 +1597,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.paused === &#x27;boolean&#x27;) state.paused = saved.paused;
     if (typeof saved.injecting === &#x27;boolean&#x27;) state.injecting = saved.injecting;
     if (typeof saved.line === &#x27;boolean&#x27;) state.line = saved.line;
+    if (typeof saved.pathline === &#x27;boolean&#x27;) state.pathline = saved.pathline;
+    if (typeof saved.streamline === &#x27;boolean&#x27;) state.streamline = saved.streamline;
     if (typeof saved.waveStrength === &#x27;number&#x27; &amp;&amp; saved.waveStrength &gt;= 0 &amp;&amp; saved.waveStrength &lt;= 2) state.waveStrength = saved.waveStrength;
     const r = Number(saved.rate ?? saved.releaseRate);
     if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 10000) state.rate = r;
@@ -1610,9 +1639,28 @@ html&gt;body{padding:0}&lt;/style&gt;
     p.x += dt * (a.x + 2 * b.x + 2 * c.x + d.x) / 6;
     p.y += dt * (a.y + 2 * b.y + 2 * c.y + d.y) / 6;
   }
+  function computeStreamline(t) {
+    if (!state.streamline) return &#x27;&#x27;;
+    let curr = { x: SOURCE.x, y: SOURCE.y };
+    let d = &#x27;M&#x27; + xy(curr);
+    const dTau = 0.08;
+    for (let s = 0; s &lt; 160; s++) {
+      const a = velocity(curr.x, curr.y, t);
+      const b = velocity(curr.x + a.x * dTau / 2, curr.y + a.y * dTau / 2, t);
+      const c = velocity(curr.x + b.x * dTau / 2, curr.y + b.y * dTau / 2, t);
+      const k = velocity(curr.x + c.x * dTau, curr.y + c.y * dTau, t);
+      curr.x += dTau * (a.x + 2 * b.x + 2 * c.x + k.x) / 6;
+      curr.y += dTau * (a.y + 2 * b.y + 2 * c.y + k.y) / 6;
+      d += &#x27;L&#x27; + xy(curr);
+      if (curr.x &gt; L + 0.1 || curr.x &lt; -0.1 || curr.y &lt; 0 || curr.y &gt; H) break;
+    }
+    return d;
+  }
   function initialize() {
     ticks = 0; particles = []; accumulated = 0; last = null; uiClock = -1; run = 0; released = 0;
     injectAccumulator = 1 - state.rate * DT;
+    pathParticle = { ...SOURCE };
+    pathHistory = [{ ...SOURCE }];
     motes = Array.from({ length: 90 }, (_, i) =&gt; ({
       x: ((i * .61803398875) % 1) * L,
       y: .12 + ((i * .41421356237 + .21) % 1) * (H - .24)
@@ -1626,6 +1674,14 @@ html&gt;body{padding:0}&lt;/style&gt;
       while (injectAccumulator &gt;= 1) {
         injectAccumulator -= 1;
         particles.push({ ...SOURCE, born: t, run, id: released++ });
+      }
+    }
+    if (state.pathline) {
+      advect(pathParticle, t, DT);
+      pathHistory.push({ x: pathParticle.x, y: pathParticle.y });
+      if (pathParticle.x &gt; L + 0.2 || pathParticle.y &lt; 0 || pathParticle.y &gt; H || pathHistory.length &gt; 2400) {
+        pathParticle = { ...SOURCE };
+        pathHistory = [{ ...SOURCE }];
       }
     }
     for (const p of particles) advect(p, t, DT);
@@ -1694,6 +1750,29 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-dots&#x27;).setAttribute(&#x27;d&#x27;, dots);
+    const streamlineD = computeStreamline(t);
+    el(&#x27;sl-streamline-soft&#x27;).setAttribute(&#x27;d&#x27;, streamlineD);
+    el(&#x27;sl-streamline-line&#x27;).setAttribute(&#x27;d&#x27;, streamlineD);
+    if (state.pathline &amp;&amp; pathHistory.length &gt; 0) {
+      let pD = &#x27;&#x27;;
+      const stepJump = pathHistory.length &gt; 400 ? 2 : 1;
+      for (let i = 0; i &lt; pathHistory.length; i += stepJump) {
+        pD += (i === 0 ? &#x27;M&#x27; : &#x27;L&#x27;) + xy(pathHistory[i]);
+      }
+      if ((pathHistory.length - 1) % stepJump !== 0) {
+        pD += &#x27;L&#x27; + xy(pathHistory[pathHistory.length - 1]);
+      }
+      el(&#x27;sl-pathline-soft&#x27;).setAttribute(&#x27;d&#x27;, pD);
+      el(&#x27;sl-pathline-line&#x27;).setAttribute(&#x27;d&#x27;, pD);
+      const head = el(&#x27;sl-pathline-head&#x27;);
+      head.style.display = &#x27;&#x27;;
+      head.setAttribute(&#x27;cx&#x27;, n(px(pathParticle.x)));
+      head.setAttribute(&#x27;cy&#x27;, n(py(pathParticle.y)));
+    } else {
+      el(&#x27;sl-pathline-soft&#x27;).setAttribute(&#x27;d&#x27;, &#x27;&#x27;);
+      el(&#x27;sl-pathline-line&#x27;).setAttribute(&#x27;d&#x27;, &#x27;&#x27;);
+      el(&#x27;sl-pathline-head&#x27;).style.display = &#x27;none&#x27;;
+    }
     el(&#x27;sl-count&#x27;).textContent = `${particles.length.toLocaleString()} tracers in view`;
     if (vortex.active) {
       el(&#x27;sl-vortex&#x27;).style.display = &#x27;&#x27;;
@@ -1713,6 +1792,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     pause.setAttribute(&#x27;aria-label&#x27;, state.paused ? &#x27;Play flow simulation&#x27; : &#x27;Pause flow simulation&#x27;);
     release.checked = state.injecting;
     lineToggle.checked = state.line;
+    if (pathlineToggle) pathlineToggle.checked = state.pathline;
+    if (streamlineToggle) streamlineToggle.checked = state.streamline;
     rate.value = rateToPos(state.rate);
     rate.setAttribute(&#x27;data-rate&#x27;, state.rate);
     rateVal.textContent = formatRate(state.rate);
@@ -1840,8 +1921,28 @@ html&gt;body{padding:0}&lt;/style&gt;
     state.line = lineToggle.checked;
     draw();
     save();
-    announce(state.line ? &#x27;Connecting lines turned on.&#x27; : &#x27;Connecting lines turned off.&#x27;);
+    announce(state.line ? &#x27;Streakline turned on.&#x27; : &#x27;Streakline turned off.&#x27;);
   });
+  if (pathlineToggle) {
+    pathlineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
+      state.pathline = pathlineToggle.checked;
+      if (state.pathline) {
+        pathParticle = { ...SOURCE };
+        pathHistory = [{ ...SOURCE }];
+      }
+      draw();
+      save();
+      announce(state.pathline ? &#x27;Pathline turned on.&#x27; : &#x27;Pathline turned off.&#x27;);
+    });
+  }
+  if (streamlineToggle) {
+    streamlineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
+      state.streamline = streamlineToggle.checked;
+      draw();
+      save();
+      announce(state.streamline ? &#x27;Streamline turned on.&#x27; : &#x27;Streamline turned off.&#x27;);
+    });
+  }
   rate.addEventListener(&#x27;input&#x27;, () =&gt; {
     state.rate = posToRate(rate.value);
     rate.setAttribute(&#x27;data-rate&#x27;, state.rate);
@@ -1901,10 +2002,14 @@ html&gt;body{padding:0}&lt;/style&gt;
     state.paused = false;
     state.injecting = false;
     state.line = false;
+    state.pathline = false;
+    state.streamline = false;
     state.rate = 4;
     state.waveStrength = 1;
     vortex.active = false;
     isPipetteHeld = false;
+    pathParticle = { ...SOURCE };
+    pathHistory = [{ ...SOURCE }];
     pipette.classList.remove(&#x27;sl-squeezed&#x27;);
     initialize();
     syncControls();
@@ -1958,6 +2063,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
