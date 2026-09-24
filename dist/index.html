@@ -1341,7 +1341,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;/label&gt;
     &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;Tracer rate
       &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-rate-val&quot;&gt;4 / s&lt;/span&gt;
-      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0.5&quot; max=&quot;10&quot; step=&quot;0.5&quot; value=&quot;4&quot;&gt;
+      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0.5&quot; max=&quot;100&quot; step=&quot;0.5&quot; value=&quot;4&quot;&gt;
     &lt;/label&gt;
     &lt;div class=&quot;viz-row&quot;&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;sl-pause&quot;&gt;Pause&lt;/button&gt;
@@ -1445,7 +1445,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.injecting === &#x27;boolean&#x27;) state.injecting = saved.injecting;
     if (typeof saved.line === &#x27;boolean&#x27;) state.line = saved.line;
     const r = Number(saved.rate ?? saved.releaseRate);
-    if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 10) state.rate = r;
+    if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 100) state.rate = r;
   }
   applySettings(window.openai?.widgetState);
   function save() {
@@ -1540,12 +1540,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-arrows&#x27;).setAttribute(&#x27;d&#x27;, arrows);
     el(&#x27;sl-motes&#x27;).setAttribute(&#x27;d&#x27;, motes.map(p =&gt; &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;).join(&#x27;&#x27;));
     let path = &#x27;&#x27;, dots = &#x27;&#x27;, previousRun = null;
+    const dotStride = state.line ? (state.rate &lt;= 15 ? 1 : Math.max(1, Math.round(state.rate / 4))) : 1;
     for (const p of particles) {
       if (state.line) {
         path += (p.run === previousRun ? &#x27;L&#x27; : &#x27;M&#x27;) + xy(p);
         previousRun = p.run;
       }
-      dots += &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;;
+      if (p.id % dotStride === 0) dots += &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;;
     }
     if (state.line &amp;&amp; state.injecting &amp;&amp; previousRun === run) path += &#x27;L&#x27; + xy(SOURCE);
     el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);

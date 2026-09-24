@@ -17,7 +17,7 @@ assert(!fragment.includes('\\"'));
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForTimeout(100);
   assert.equal(await ui.locator('#sl-rate').getAttribute('min'), '0.5');
-  assert.equal(await ui.locator('#sl-rate').getAttribute('max'), '10');
+  assert.equal(await ui.locator('#sl-rate').getAttribute('max'), '100');
   assert.equal(await ui.locator('#sl-rate').getAttribute('step'), '0.5');
   const initialRate = Number(await ui.locator('#sl-rate').inputValue());
   await ui.locator('#sl-pause').click();
