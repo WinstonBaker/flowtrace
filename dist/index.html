@@ -1349,10 +1349,13 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;/div&gt;
           &lt;span class=&quot;sl-card-desc&quot;&gt;Inject passive fluid dye particles into the channel flow&lt;/span&gt;
         &lt;/div&gt;
-        &lt;label class=&quot;form-check form-switch sl-dye-switch&quot; for=&quot;sl-dye&quot;&gt;
-          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
-          &lt;span class=&quot;form-check-label sl-dye-label&quot;&gt;Release dye&lt;/span&gt;
-        &lt;/label&gt;
+        &lt;div class=&quot;sl-tracer-actions&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-clear-tracers&quot; disabled&gt;Clear tracers&lt;/button&gt;
+          &lt;label class=&quot;form-check form-switch sl-dye-switch&quot; for=&quot;sl-dye&quot;&gt;
+            &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
+            &lt;span class=&quot;form-check-label sl-dye-label&quot;&gt;Release dye&lt;/span&gt;
+          &lt;/label&gt;
+        &lt;/div&gt;
       &lt;/div&gt;
       &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
         &lt;div class=&quot;sl-label-row&quot;&gt;
@@ -1678,6 +1681,17 @@ html&gt;body{padding:0}&lt;/style&gt;
     border-radius: 7px;
     white-space: nowrap;
     cursor: pointer;
+  }
+  #streakline-lab .sl-tracer-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  #streakline-lab #sl-clear-tracers:not(:disabled) {
+    border-color: #0284c7;
+    color: #0284c7;
+    font-weight: 600;
   }
   #streakline-lab .sl-dye-switch {
     margin: 0;
@@ -2149,6 +2163,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   const wave = el(&#x27;sl-wave&#x27;);
   const waveVal = el(&#x27;sl-wave-val&#x27;);
   const clearVortex = el(&#x27;sl-vortex-clear&#x27;);
+  const clearTracers = el(&#x27;sl-clear-tracers&#x27;);
   const vortexLegend = el(&#x27;sl-vortex-legend&#x27;);
   const pipette = el(&#x27;sl-pipette&#x27;);
   let isPipetteHeld = false;
@@ -2402,6 +2417,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
     totalTracers = Math.min(1000000, Math.round(totalTracers));
     el(&#x27;sl-count&#x27;).textContent = `${totalTracers.toLocaleString()} tracers in view`;
+    if (clearTracers) clearTracers.disabled = (particles.length === 0);
     if (vortex.active) {
       el(&#x27;sl-vortex&#x27;).style.display = &#x27;&#x27;;
       el(&#x27;sl-vortex&#x27;).setAttribute(&#x27;transform&#x27;, `translate(${n(px(vortex.x))},${n(py(vortex.y))})`);
@@ -2454,6 +2470,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     updateSlider(wave);
     updateSlider(rate);
     clearVortex.disabled = !vortex.active;
+    if (clearTracers) clearTracers.disabled = (particles.length === 0);
     vortexLegend.style.display = vortex.active ? &#x27;inline-flex&#x27; : &#x27;none&#x27;;
   }
   function updateSlider(input) {
@@ -2499,6 +2516,17 @@ html&gt;body{padding:0}&lt;/style&gt;
     save();
     announce(&#x27;Swirl vortex removed.&#x27;);
   });
+  if (clearTracers) {
+    clearTracers.addEventListener(&#x27;click&#x27;, () =&gt; {
+      particles = [];
+      injectAccumulator = 0;
+      run++;
+      syncControls();
+      draw();
+      save();
+      announce(&#x27;Tracers cleared.&#x27;);
+    });
+  }
   let draggingVortex = false;
   function handlePointer(event) {
     if (event.target &amp;&amp; event.target.closest &amp;&amp; event.target.closest(&#x27;#sl-pipette&#x27;)) return false;
@@ -2723,6 +2751,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
