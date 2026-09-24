@@ -1340,12 +1340,43 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;/select&gt;
     &lt;/label&gt;
     &lt;label class=&quot;form-label&quot; for=&quot;sl-wave&quot;&gt;Wave strength
-      &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-wave-val&quot;&gt;100%&lt;/span&gt;
-      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-wave&quot; min=&quot;0&quot; max=&quot;200&quot; step=&quot;10&quot; value=&quot;100&quot;&gt;
+      &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-wave-val&quot;&gt;100%&lt;/span&gt;
+      &lt;div class=&quot;sl-slider-container&quot;&gt;
+        &lt;div class=&quot;sl-slider-row&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-wave&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease wave strength&quot;&gt;−&lt;/button&gt;
+          &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
+            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-wave&quot; min=&quot;0&quot; max=&quot;200&quot; step=&quot;10&quot; value=&quot;100&quot;&gt;
+          &lt;/div&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-wave&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase wave strength&quot;&gt;+&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sl-presets&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;0&quot;&gt;0%&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;50&quot;&gt;50%&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;100&quot;&gt;100%&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;150&quot;&gt;150%&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-wave&quot; data-val=&quot;200&quot;&gt;200%&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/label&gt;
     &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;Tracer rate
-      &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-rate-val&quot;&gt;4 / s&lt;/span&gt;
-      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0.5&quot; max=&quot;100&quot; step=&quot;0.5&quot; value=&quot;4&quot;&gt;
+      &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-rate-val&quot;&gt;4 / s&lt;/span&gt;
+      &lt;div class=&quot;sl-slider-container&quot;&gt;
+        &lt;div class=&quot;sl-slider-row&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
+          &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
+            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0.5&quot; max=&quot;100&quot; step=&quot;0.5&quot; value=&quot;4&quot;&gt;
+          &lt;/div&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sl-presets&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1&quot;&gt;1 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10&quot;&gt;10 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;25&quot;&gt;25 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;100&quot;&gt;100 / s&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/label&gt;
     &lt;div class=&quot;viz-row&quot;&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;sl-pause&quot;&gt;Pause&lt;/button&gt;
@@ -1433,6 +1464,29 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-legend &gt; span { display: inline-flex; align-items: center; gap: 8px; }
   #streakline-lab .sl-swatch { display: inline-block; width: 22px; height: 3px; background: var(--viz-series-1); }
   #streakline-lab .sl-velocity { color: var(--foreground); display: inline-block; width: 22px; }
+  #streakline-lab .sl-badge { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent); }
+  #streakline-lab .sl-slider-container { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 5px; width: 100%; box-sizing: border-box; }
+  #streakline-lab .sl-slider-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+  #streakline-lab .sl-step-btn { width: 26px; height: 26px; min-width: 26px; padding: 0; font-size: 14px; font-weight: 600; line-height: 1; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: var(--card); color: var(--foreground); cursor: pointer; user-select: none; -webkit-user-select: none; transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease; }
+  #streakline-lab .sl-step-btn:hover:not(:disabled) { background: var(--muted); border-color: var(--primary); }
+  #streakline-lab .sl-step-btn:active:not(:disabled) { transform: scale(0.92); }
+  #streakline-lab .sl-step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  #streakline-lab .sl-slider-wrapper { position: relative; flex: 1; display: flex; align-items: center; }
+  #streakline-lab .form-range { appearance: none; -webkit-appearance: none; width: 100%; height: 28px; margin: 0; padding: 0; background: transparent !important; cursor: pointer; outline: none; border: none; }
+  #streakline-lab .form-range::-webkit-slider-runnable-track { height: 8px; border-radius: 999px; background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--sl-pct, 0%), color-mix(in srgb, var(--foreground) 12%, transparent) var(--sl-pct, 0%), color-mix(in srgb, var(--foreground) 12%, transparent) 100%); transition: background 0.04s ease; border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
+  #streakline-lab .form-range::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; margin-top: -6px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: grab; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+  #streakline-lab .form-range:hover::-webkit-slider-thumb { transform: scale(1.15); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent); }
+  #streakline-lab .form-range:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.22); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 4px color-mix(in srgb, var(--primary) 35%, transparent); }
+  #streakline-lab .form-range:focus-visible::-webkit-slider-thumb { border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 40%, transparent); }
+  #streakline-lab .form-range::-moz-range-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--foreground) 12%, transparent); border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent); }
+  #streakline-lab .form-range::-moz-range-progress { height: 8px; border-radius: 999px; background: var(--primary); }
+  #streakline-lab .form-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 2px solid var(--primary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22); cursor: grab; transition: transform 0.12s ease; }
+  #streakline-lab .form-range:disabled { opacity: 0.45; cursor: not-allowed; }
+  #streakline-lab .sl-presets { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 1px; }
+  #streakline-lab .sl-chip { padding: 2px 7px; font-size: 11px; font-weight: 500; line-height: 1.2; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); opacity: 0.85; cursor: pointer; user-select: none; -webkit-user-select: none; transition: all 0.15s ease; }
+  #streakline-lab .sl-chip:hover:not(:disabled) { opacity: 1; border-color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, var(--card)); color: var(--primary); }
+  #streakline-lab .sl-chip.is-active { opacity: 1; border-color: var(--primary); background: var(--primary); color: #ffffff; font-weight: 600; }
+  #streakline-lab .sl-chip:disabled { opacity: 0.35; cursor: not-allowed; }
   @media (max-width: 440px) {
     #streakline-lab .sl-heading { gap: 6px; }
     #streakline-lab .sl-scene { height: 330px; }
@@ -1623,13 +1677,31 @@ html&gt;body{padding:0}&lt;/style&gt;
     wave.value = Math.round(state.waveStrength * 100);
     waveVal.textContent = `${wave.value}%`;
     wave.disabled = state.mode === &#x27;uniform&#x27;;
+    updateSlider(wave);
+    updateSlider(rate);
     clearVortex.disabled = !vortex.active;
     vortexLegend.style.display = vortex.active ? &#x27;inline-flex&#x27; : &#x27;none&#x27;;
+  }
+  function updateSlider(input) {
+    if (!input) return;
+    const min = Number(input.min) || 0;
+    const max = Number(input.max) || 100;
+    const val = Number(input.value);
+    const pct = Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+    input.style.setProperty(&#x27;--sl-pct&#x27;, pct.toFixed(1) + &#x27;%&#x27;);
+    root.querySelectorAll(&quot;.sl-chip[data-for=&#x27;&quot; + input.id + &quot;&#x27;]&quot;).forEach(chip =&gt; {
+      chip.classList.toggle(&#x27;is-active&#x27;, Number(chip.dataset.val) === val);
+      chip.disabled = input.disabled;
+    });
+    root.querySelectorAll(&quot;.sl-step-btn[data-step-for=&#x27;&quot; + input.id + &quot;&#x27;]&quot;).forEach(btn =&gt; {
+      btn.disabled = input.disabled;
+    });
   }
   const announce = text =&gt; { el(&#x27;sl-announcement&#x27;).textContent = text; };
   wave.addEventListener(&#x27;input&#x27;, () =&gt; {
     state.waveStrength = Number(wave.value) / 100;
     waveVal.textContent = `${wave.value}%`;
+    updateSlider(wave);
     draw();
     save();
   });
@@ -1722,6 +1794,32 @@ html&gt;body{padding:0}&lt;/style&gt;
   rate.addEventListener(&#x27;change&#x27;, () =&gt; {
     announce(`Tracer rate set to ${state.rate} tracers per second.`);
   });
+  root.querySelectorAll(&#x27;.sl-step-btn&#x27;).forEach(btn =&gt; {
+    btn.addEventListener(&#x27;click&#x27;, () =&gt; {
+      const targetId = btn.dataset.stepFor;
+      const target = el(targetId);
+      if (!target || target.disabled) return;
+      const dir = Number(btn.dataset.dir);
+      const step = Number(target.step) || 1;
+      const min = Number(target.min) || 0;
+      const max = Number(target.max) || 100;
+      let next = Math.round((Number(target.value) + dir * step) * 100) / 100;
+      next = Math.max(min, Math.min(max, next));
+      target.value = next;
+      target.dispatchEvent(new Event(&#x27;input&#x27;, { bubbles: true }));
+      target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+    });
+  });
+  root.querySelectorAll(&#x27;.sl-chip&#x27;).forEach(chip =&gt; {
+    chip.addEventListener(&#x27;click&#x27;, () =&gt; {
+      const targetId = chip.dataset.for;
+      const target = el(targetId);
+      if (!target || target.disabled) return;
+      target.value = chip.dataset.val;
+      target.dispatchEvent(new Event(&#x27;input&#x27;, { bubbles: true }));
+      target.dispatchEvent(new Event(&#x27;change&#x27;, { bubbles: true }));
+    });
+  });
   pause.addEventListener(&#x27;click&#x27;, () =&gt; {
     state.paused = !state.paused; last = null; syncControls(); save();
     announce(state.paused ? `Paused at ${(ticks * DT).toFixed(1)} seconds.` : &#x27;Simulation playing.&#x27;);
@@ -1767,6 +1865,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
