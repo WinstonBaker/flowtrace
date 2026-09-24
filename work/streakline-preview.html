@@ -1357,18 +1357,18 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
         &lt;div class=&quot;sl-label-row&quot;&gt;
           &lt;span class=&quot;sl-rate-label-text&quot;&gt;Emission rate&lt;/span&gt;
-          &lt;span class=&quot;text-small tabular-nums sl-badge sl-badge-primary&quot; id=&quot;sl-rate-val&quot;&gt;0.5 / s&lt;/span&gt;
+          &lt;span class=&quot;text-small tabular-nums sl-badge sl-badge-primary&quot; id=&quot;sl-rate-val&quot;&gt;1 / s&lt;/span&gt;
         &lt;/div&gt;
         &lt;div class=&quot;sl-slider-container&quot;&gt;
           &lt;div class=&quot;sl-slider-row&quot;&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
             &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;0.5&quot; data-max=&quot;1000000&quot; data-rate=&quot;0.5&quot;&gt;
+              &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;1&quot; data-max=&quot;1000000&quot; data-rate=&quot;1&quot;&gt;
             &lt;/div&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
           &lt;/div&gt;
           &lt;div class=&quot;sl-presets&quot;&gt;
-            &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;0.5&quot;&gt;0.5 / s&lt;/button&gt;
+            &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1&quot;&gt;1 / s&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;50&quot;&gt;50 / s&lt;/button&gt;
             &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1000&quot;&gt;1k / s&lt;/button&gt;
@@ -2153,13 +2153,13 @@ html&gt;body{padding:0}&lt;/style&gt;
   const pipette = el(&#x27;sl-pipette&#x27;);
   let isPipetteHeld = false;
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
-  const state = { frozenField: false, paused: reducedMotion.matches, injecting: false, rate: 0.5, line: false, pathline: false, streamline: false, waveStrength: 1 };
+  const state = { frozenField: false, paused: reducedMotion.matches, injecting: false, rate: 1, line: false, pathline: false, streamline: false, waveStrength: 1 };
   let frozenTime = 0;
   const vortex = { active: false, x: 6, y: 2, gamma: 1.2 };
   const L = 12, H = 4, U = 0.65, B = 0.50, K = 0.82, OMEGA = 0.58;
   const SOURCE = { x: 1.28, y: 2.65 };
   const DT = 1 / 120;
-  let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0.5;
+  let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0;
   let width = 736, height = 370, top = 134, bottom = 342;
   let last = null, accumulated = 0, uiClock = -1;
   function formatRate(r) {
@@ -2170,10 +2170,10 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
   function posToRate(pos) {
     const t = Math.max(0, Math.min(1000, Number(pos))) / 1000;
-    const raw = 0.5 * Math.pow(2000000, t);
-    if (raw &lt;= 0.5) return 0.5;
+    const raw = 1.0 * Math.pow(1000000, t);
+    if (raw &lt;= 1) return 1;
     if (raw &gt;= 1000000) return 1000000;
-    if (raw &lt; 10) return Math.round(raw * 2) / 2;
+    if (raw &lt; 10) return Math.round(raw);
     if (raw &lt; 100) return Math.round(raw);
     if (raw &lt; 1000) return Math.round(raw / 10) * 10;
     if (raw &lt; 10000) return Math.round(raw / 100) * 100;
@@ -2181,13 +2181,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     return Math.round(raw / 10000) * 10000;
   }
   function rateToPos(r) {
-    const clamped = Math.max(0.5, Math.min(1000000, Number(r)));
-    const t = Math.log(clamped / 0.5) / Math.log(2000000);
+    const clamped = Math.max(1, Math.min(1000000, Number(r)));
+    const t = Math.log(clamped) / Math.log(1000000);
     return Math.round(t * 1000);
   }
   function stepRate(currentRate, dir) {
     if (dir &gt; 0) {
-      if (currentRate &lt; 1) return 1;
+      if (currentRate &lt; 2) return 2;
       if (currentRate &lt; 10) return currentRate + 1;
       if (currentRate &lt; 50) return currentRate + 5;
       if (currentRate &lt; 200) return currentRate + 25;
@@ -2196,14 +2196,14 @@ html&gt;body{padding:0}&lt;/style&gt;
       if (currentRate &lt; 100000) return currentRate + 10000;
       return Math.min(1000000, currentRate + 100000);
     } else {
-      if (currentRate &lt;= 1) return 0.5;
+      if (currentRate &lt;= 2) return 1;
       if (currentRate &lt;= 10) return currentRate - 1;
       if (currentRate &lt;= 50) return currentRate - 5;
       if (currentRate &lt;= 200) return currentRate - 25;
       if (currentRate &lt;= 1000) return currentRate - 100;
       if (currentRate &lt;= 10000) return currentRate - 1000;
       if (currentRate &lt;= 100000) return currentRate - 10000;
-      return Math.max(0.5, currentRate - 100000);
+      return Math.max(1, currentRate - 100000);
     }
   }
   const settingsFrom = value =&gt; value?.modelContent?.streakline || value?.streakline;
@@ -2219,7 +2219,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.streamline === &#x27;boolean&#x27;) state.streamline = saved.streamline;
     if (typeof saved.waveStrength === &#x27;number&#x27; &amp;&amp; saved.waveStrength &gt;= 0 &amp;&amp; saved.waveStrength &lt;= 2) state.waveStrength = saved.waveStrength;
     const r = Number(saved.rate ?? saved.releaseRate);
-    if (Number.isFinite(r) &amp;&amp; r &gt;= 0.5 &amp;&amp; r &lt;= 1000000) state.rate = r;
+    if (Number.isFinite(r) &amp;&amp; r &gt;= 1 &amp;&amp; r &lt;= 1000000) state.rate = r;
   }
   applySettings(window.openai?.widgetState);
   function save() {
@@ -2659,7 +2659,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     state.line = false;
     state.pathline = false;
     state.streamline = false;
-    state.rate = 0.5;
+    state.rate = 1;
     state.waveStrength = 1;
     vortex.active = false;
     isPipetteHeld = false;
@@ -2723,6 +2723,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
