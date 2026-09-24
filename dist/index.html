@@ -1349,13 +1349,7 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;/div&gt;
           &lt;span class=&quot;sl-card-desc&quot;&gt;Inject passive fluid dye particles into the channel flow&lt;/span&gt;
         &lt;/div&gt;
-        &lt;div class=&quot;sl-tracer-actions&quot;&gt;
-          &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-clear-tracers&quot; disabled&gt;Clear tracers&lt;/button&gt;
-          &lt;label class=&quot;form-check form-switch sl-dye-switch&quot; for=&quot;sl-dye&quot;&gt;
-            &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
-            &lt;span class=&quot;form-check-label sl-dye-label&quot;&gt;Release dye&lt;/span&gt;
-          &lt;/label&gt;
-        &lt;/div&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-clear-tracers&quot; disabled&gt;Clear tracers&lt;/button&gt;
       &lt;/div&gt;
       &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
         &lt;div class=&quot;sl-label-row&quot;&gt;
@@ -1425,8 +1419,14 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;!-- Diagnostic Lines &amp; Action Controls Bar --&gt;
   &lt;div class=&quot;sl-control-deck&quot;&gt;
     &lt;div class=&quot;sl-lines-deck&quot;&gt;
-      &lt;span class=&quot;sl-deck-label&quot;&gt;Flow Lines &amp; Field:&lt;/span&gt;
+      &lt;span class=&quot;sl-deck-label&quot;&gt;Flow Toggles:&lt;/span&gt;
       &lt;div class=&quot;sl-lines-pills&quot;&gt;
+        &lt;label class=&quot;form-check form-switch sl-line-pill sl-pill-dye&quot; for=&quot;sl-dye&quot;&gt;
+          &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot;&gt;
+          &lt;span class=&quot;form-check-label&quot;&gt;
+            &lt;span class=&quot;sl-pill-title&quot;&gt;Release dye&lt;/span&gt;
+          &lt;/span&gt;
+        &lt;/label&gt;
         &lt;label class=&quot;form-check form-switch sl-line-pill sl-pill-streak&quot; for=&quot;sl-line-toggle&quot;&gt;
           &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot;&gt;
           &lt;span class=&quot;form-check-label&quot;&gt;
@@ -1975,6 +1975,14 @@ html&gt;body{padding:0}&lt;/style&gt;
     border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
     background: color-mix(in srgb, var(--foreground) 4%, var(--card));
   }
+  #streakline-lab .sl-line-pill.is-active.sl-pill-dye {
+    border-color: #0284c7;
+    background: color-mix(in srgb, #0284c7 12%, var(--card));
+  }
+  #streakline-lab .sl-line-pill.is-active.sl-pill-dye .sl-pill-title {
+    color: #0284c7;
+    font-weight: 700;
+  }
   #streakline-lab .sl-line-pill.is-active.sl-pill-streak {
     border-color: #0284c7;
     background: color-mix(in srgb, #0284c7 10%, var(--card));
@@ -2486,6 +2494,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     pause.textContent = state.paused ? &#x27;Play&#x27; : &#x27;Pause&#x27;;
     pause.setAttribute(&#x27;aria-label&#x27;, state.paused ? &#x27;Play flow simulation&#x27; : &#x27;Pause flow simulation&#x27;);
     release.checked = state.injecting;
+    const dyePill = release.closest(&#x27;.sl-line-pill&#x27;);
+    if (dyePill) dyePill.classList.toggle(&#x27;is-active&#x27;, state.injecting);
     lineToggle.checked = state.line;
     const streakPill = lineToggle.closest(&#x27;.sl-line-pill&#x27;);
     if (streakPill) streakPill.classList.toggle(&#x27;is-active&#x27;, state.line);
@@ -2793,6 +2803,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
