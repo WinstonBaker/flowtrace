@@ -1454,10 +1454,10 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;div id=&quot;sl-announcement&quot; class=&quot;sr-only&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;style&gt;
-  #streakline-lab { color: var(--foreground); }
+  #streakline-lab { color: var(--foreground); user-select: none; -webkit-user-select: none; }
   #streakline-lab .sl-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
   #streakline-lab h2 { margin: 0; }
-  #streakline-lab .sl-scene { display: block; width: 100%; height: 370px; overflow: visible; cursor: crosshair; touch-action: none; }
+  #streakline-lab .sl-scene { display: block; width: 100%; height: 370px; overflow: visible; cursor: crosshair; touch-action: none; user-select: none; -webkit-user-select: none; }
   #streakline-lab .sl-water { fill: var(--muted); opacity: .38; }
   #streakline-lab .sl-wall { fill: none; stroke: var(--foreground); stroke-opacity: .20; stroke-width: 1; }
   #streakline-lab .sl-arrows { fill: none; stroke: var(--foreground); stroke-opacity: .28; stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
@@ -1906,22 +1906,30 @@ html&gt;body{padding:0}&lt;/style&gt;
   pipette.addEventListener(&#x27;pointercancel&#x27;, releasePipette);
   svg.addEventListener(&#x27;pointerdown&#x27;, e =&gt; {
     if (handlePointer(e)) {
+      e.preventDefault();
       draggingVortex = true;
       try { svg.setPointerCapture(e.pointerId); } catch {}
+      try { window.getSelection()?.removeAllRanges(); } catch {}
       announce(&#x27;Swirl vortex placed in fluid.&#x27;);
     }
   });
   svg.addEventListener(&#x27;pointermove&#x27;, e =&gt; {
-    if (draggingVortex) handlePointer(e);
+    if (draggingVortex) {
+      e.preventDefault();
+      handlePointer(e);
+    }
   });
   const stopDrag = e =&gt; {
     if (draggingVortex) {
       draggingVortex = false;
       try { svg.releasePointerCapture(e.pointerId); } catch {}
+      try { window.getSelection()?.removeAllRanges(); } catch {}
     }
   };
   svg.addEventListener(&#x27;pointerup&#x27;, stopDrag);
   svg.addEventListener(&#x27;pointercancel&#x27;, stopDrag);
+  svg.addEventListener(&#x27;selectstart&#x27;, e =&gt; e.preventDefault());
+  document.addEventListener(&#x27;selectstart&#x27;, e =&gt; { if (draggingVortex) e.preventDefault(); });
   lineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
     state.line = lineToggle.checked;
     draw();
@@ -2062,6 +2070,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
