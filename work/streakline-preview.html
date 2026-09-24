@@ -1339,6 +1339,10 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;option value=&quot;uniform&quot;&gt;Uniform flow&lt;/option&gt;
       &lt;/select&gt;
     &lt;/label&gt;
+    &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;Tracer rate
+      &lt;span class=&quot;text-small tabular-nums&quot; id=&quot;sl-rate-val&quot;&gt;60 / s&lt;/span&gt;
+      &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;10&quot; max=&quot;120&quot; step=&quot;5&quot; value=&quot;60&quot;&gt;
+    &lt;/label&gt;
     &lt;div class=&quot;viz-row&quot;&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;sl-pause&quot;&gt;Pause&lt;/button&gt;
       &lt;label class=&quot;form-check form-switch&quot;&gt;
@@ -1349,7 +1353,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;/div&gt;
   &lt;svg class=&quot;sl-scene&quot; id=&quot;sl-scene&quot; role=&quot;img&quot; aria-labelledby=&quot;sl-title sl-description&quot;&gt;
     &lt;title id=&quot;sl-title&quot;&gt;Dye released from a fixed pipette into a flowing channel&lt;/title&gt;
-    &lt;desc id=&quot;sl-description&quot;&gt;The pipette releases sixty passive tracers per simulated second. The colored streak joins their current positions, while arrows indicate the local velocity. The entire streak changes shape in the unsteady flow. The dye has no diffusion and does not affect the prescribed flow.&lt;/desc&gt;
+    &lt;desc id=&quot;sl-description&quot;&gt;The pipette releases passive tracers into the channel at an adjustable rate. The colored streak joins their current positions, while arrows indicate the local velocity. The entire streak changes shape in the unsteady flow. The dye has no diffusion and does not affect the prescribed flow.&lt;/desc&gt;
     &lt;defs&gt;
       &lt;clipPath id=&quot;sl-water-clip&quot;&gt;&lt;rect id=&quot;sl-clip-box&quot;&gt;&lt;/rect&gt;&lt;/clipPath&gt;
     &lt;/defs&gt;
@@ -1417,12 +1421,14 @@ html&gt;body{padding:0}&lt;/style&gt;
   const flow = el(&#x27;sl-flow&#x27;);
   const pause = el(&#x27;sl-pause&#x27;);
   const release = el(&#x27;sl-dye&#x27;);
+  const rate = el(&#x27;sl-rate&#x27;);
+  const rateVal = el(&#x27;sl-rate-val&#x27;);
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
-  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true };
+  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true, rate: 60 };
   const L = 12, H = 4, U = 1.25, B = .96, K = .82, OMEGA = 1.1;
   const SOURCE = { x: 1.28, y: 2.65 };
   const DT = 1 / 120;
-  let ticks = 0, particles = [], motes = [], run = 0, released = 0;
+  let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0.5;
   let width = 736, height = 370, top = 134, bottom = 342;
   let last = null, accumulated = 0, uiClock = -1;
   const settingsFrom = value =&gt; value?.modelContent?.streakline || value?.streakline;
@@ -1432,11 +1438,13 @@ html&gt;body{padding:0}&lt;/style&gt;
     if ([&#x27;unsteady&#x27;, &#x27;steady&#x27;, &#x27;uniform&#x27;].includes(saved.mode)) state.mode = saved.mode;
     if (typeof saved.paused === &#x27;boolean&#x27;) state.paused = saved.paused;
     if (typeof saved.injecting === &#x27;boolean&#x27;) state.injecting = saved.injecting;
+    const r = Number(saved.rate ?? saved.releaseRate);
+    if (Number.isFinite(r) &amp;&amp; r &gt;= 10 &amp;&amp; r &lt;= 120) state.rate = r;
   }
   applySettings(window.openai?.widgetState);
   function save() {
     if (window.openai?.setWidgetState) {
-      window.openai.setWidgetState({ modelContent: { streakline: { ...state, releaseRate: 60 } }, privateContent: null }).catch(() =&gt; {});
+      window.openai.setWidgetState({ modelContent: { streakline: { ...state, releaseRate: state.rate } }, privateContent: null }).catch(() =&gt; {});
     }
   }
   function velocity(x, y, t) {
@@ -1459,6 +1467,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
   function initialize() {
     ticks = 0; particles = []; accumulated = 0; last = null; uiClock = -1; run = 0; released = 0;
+    injectAccumulator = 1 - state.rate * DT;
     motes = Array.from({ length: 90 }, (_, i) =&gt; ({
       x: ((i * .61803398875) % 1) * L,
       y: .12 + ((i * .41421356237 + .21) % 1) * (H - .24)
@@ -1466,9 +1475,12 @@ html&gt;body{padding:0}&lt;/style&gt;
   }
   function step() {
     const t = ticks * DT;
-    // One new tracer every two physics steps: exactly 60 per simulated second.
-    if (state.injecting &amp;&amp; ticks % 2 === 0) {
-      particles.push({ ...SOURCE, born: t, run, id: released++ });
+    if (state.injecting) {
+      injectAccumulator += state.rate * DT;
+      while (injectAccumulator &gt;= 1) {
+        injectAccumulator -= 1;
+        particles.push({ ...SOURCE, born: t, run, id: released++ });
+      }
     }
     for (const p of particles) advect(p, t, DT);
     particles = particles.filter(p =&gt; p.x &lt;= L + .2 &amp;&amp; p.y &gt;= 0 &amp;&amp; p.y &lt;= H);
@@ -1542,10 +1554,20 @@ html&gt;body{padding:0}&lt;/style&gt;
     pause.textContent = state.paused ? &#x27;Play&#x27; : &#x27;Pause&#x27;;
     pause.setAttribute(&#x27;aria-label&#x27;, state.paused ? &#x27;Play flow simulation&#x27; : &#x27;Pause flow simulation&#x27;);
     release.checked = state.injecting;
-    el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? &#x27;60 tracers / s&#x27; : &#x27;Dye off&#x27;;
+    rate.value = state.rate;
+    rateVal.textContent = `${state.rate} / s`;
+    el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? `${state.rate} tracers / s` : &#x27;Dye off&#x27;;
     el(&#x27;sl-source&#x27;).style.opacity = state.injecting ? &#x27;1&#x27; : &#x27;.3&#x27;;
   }
   const announce = text =&gt; { el(&#x27;sl-announcement&#x27;).textContent = text; };
+  rate.addEventListener(&#x27;input&#x27;, () =&gt; {
+    state.rate = Number(rate.value);
+    syncControls();
+    save();
+  });
+  rate.addEventListener(&#x27;change&#x27;, () =&gt; {
+    announce(`Tracer rate set to ${state.rate} tracers per second.`);
+  });
   pause.addEventListener(&#x27;click&#x27;, () =&gt; {
     state.paused = !state.paused; last = null; syncControls(); save();
     announce(state.paused ? `Paused at ${(ticks * DT).toFixed(1)} seconds.` : &#x27;Simulation playing.&#x27;);
