@@ -1359,16 +1359,17 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;/div&gt;
     &lt;/label&gt;
     &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;Tracer rate
-      &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-rate-val&quot;&gt;4 / s&lt;/span&gt;
+      &lt;span class=&quot;text-small tabular-nums sl-badge&quot; id=&quot;sl-rate-val&quot;&gt;0.5 / s&lt;/span&gt;
       &lt;div class=&quot;sl-slider-container&quot;&gt;
         &lt;div class=&quot;sl-slider-row&quot;&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;-1&quot; aria-label=&quot;Decrease tracer rate&quot;&gt;−&lt;/button&gt;
           &lt;div class=&quot;sl-slider-wrapper&quot;&gt;
-            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;210&quot; data-min=&quot;0.5&quot; data-max=&quot;10000&quot; data-rate=&quot;4&quot;&gt;
+            &lt;input class=&quot;form-range&quot; type=&quot;range&quot; id=&quot;sl-rate&quot; min=&quot;0&quot; max=&quot;1000&quot; step=&quot;1&quot; value=&quot;0&quot; data-min=&quot;0.5&quot; data-max=&quot;10000&quot; data-rate=&quot;0.5&quot;&gt;
           &lt;/div&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-step-btn&quot; data-step-for=&quot;sl-rate&quot; data-dir=&quot;1&quot; aria-label=&quot;Increase tracer rate&quot;&gt;+&lt;/button&gt;
         &lt;/div&gt;
         &lt;div class=&quot;sl-presets&quot;&gt;
+          &lt;button type=&quot;button&quot; class=&quot;sl-chip is-active&quot; data-for=&quot;sl-rate&quot; data-val=&quot;0.5&quot;&gt;0.5 / s&lt;/button&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;1&quot;&gt;1 / s&lt;/button&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;4&quot;&gt;4 / s&lt;/button&gt;
           &lt;button type=&quot;button&quot; class=&quot;sl-chip&quot; data-for=&quot;sl-rate&quot; data-val=&quot;10&quot;&gt;10 / s&lt;/button&gt;
@@ -1542,13 +1543,12 @@ html&gt;body{padding:0}&lt;/style&gt;
   const pipette = el(&#x27;sl-pipette&#x27;);
   let isPipetteHeld = false;
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
-  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: false, rate: 4, line: false, pathline: false, streamline: false, waveStrength: 1 };
+  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: false, rate: 0.5, line: false, pathline: false, streamline: false, waveStrength: 1 };
   const vortex = { active: false, x: 6, y: 2, gamma: 1.2 };
   const L = 12, H = 4, U = 0.65, B = 0.50, K = 0.82, OMEGA = 0.58;
   const SOURCE = { x: 1.28, y: 2.65 };
   const DT = 1 / 120;
   let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0.5;
-  let pathParticle = { ...SOURCE }, pathHistory = [{ ...SOURCE }];
   let width = 736, height = 370, top = 134, bottom = 342;
   let last = null, accumulated = 0, uiClock = -1;
   function formatRate(r) {
@@ -1659,8 +1659,6 @@ html&gt;body{padding:0}&lt;/style&gt;
   function initialize() {
     ticks = 0; particles = []; accumulated = 0; last = null; uiClock = -1; run = 0; released = 0;
     injectAccumulator = 1 - state.rate * DT;
-    pathParticle = { ...SOURCE };
-    pathHistory = [{ ...SOURCE }];
     motes = Array.from({ length: 90 }, (_, i) =&gt; ({
       x: ((i * .61803398875) % 1) * L,
       y: .12 + ((i * .41421356237 + .21) % 1) * (H - .24)
@@ -1671,20 +1669,29 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (state.injecting || isPipetteHeld) {
       const currentRate = isPipetteHeld &amp;&amp; state.injecting ? state.rate * 1.5 : state.rate;
       injectAccumulator += currentRate * DT;
+      const trackStride = Math.max(1, Math.round(currentRate / 4));
       while (injectAccumulator &gt;= 1) {
         injectAccumulator -= 1;
-        particles.push({ ...SOURCE, born: t, run, id: released++ });
+        const trackPath = (released % trackStride === 0);
+        particles.push({
+          ...SOURCE,
+          born: t,
+          run,
+          id: released++,
+          trackPath,
+          path: trackPath ? [{ x: SOURCE.x, y: SOURCE.y }] : null
+        });
       }
     }
-    if (state.pathline) {
-      advect(pathParticle, t, DT);
-      pathHistory.push({ x: pathParticle.x, y: pathParticle.y });
-      if (pathParticle.x &gt; L + 0.2 || pathParticle.y &lt; 0 || pathParticle.y &gt; H || pathHistory.length &gt; 2400) {
-        pathParticle = { ...SOURCE };
-        pathHistory = [{ ...SOURCE }];
+    const recordTick = (ticks % 3 === 0);
+    for (const p of particles) {
+      advect(p, t, DT);
+      if (p.trackPath &amp;&amp; recordTick) {
+        if (p.path.length &lt; 800) {
+          p.path.push({ x: p.x, y: p.y });
+        }
       }
     }
-    for (const p of particles) advect(p, t, DT);
     particles = particles.filter(p =&gt; p.x &lt;= L + .2 &amp;&amp; p.y &gt;= 0 &amp;&amp; p.y &lt;= H);
     if (particles.length &gt; 5000) particles = particles.filter((_, idx) =&gt; idx % 2 === 0);
     for (const p of motes) {
@@ -1753,26 +1760,24 @@ html&gt;body{padding:0}&lt;/style&gt;
     const streamlineD = computeStreamline(t);
     el(&#x27;sl-streamline-soft&#x27;).setAttribute(&#x27;d&#x27;, streamlineD);
     el(&#x27;sl-streamline-line&#x27;).setAttribute(&#x27;d&#x27;, streamlineD);
-    if (state.pathline &amp;&amp; pathHistory.length &gt; 0) {
+    if (state.pathline &amp;&amp; particles.length &gt; 0) {
       let pD = &#x27;&#x27;;
-      const stepJump = pathHistory.length &gt; 400 ? 2 : 1;
-      for (let i = 0; i &lt; pathHistory.length; i += stepJump) {
-        pD += (i === 0 ? &#x27;M&#x27; : &#x27;L&#x27;) + xy(pathHistory[i]);
-      }
-      if ((pathHistory.length - 1) % stepJump !== 0) {
-        pD += &#x27;L&#x27; + xy(pathHistory[pathHistory.length - 1]);
+      for (const p of particles) {
+        if (!p.path || p.path.length === 0) continue;
+        pD += &#x27;M&#x27; + xy(p.path[0]);
+        const ptStep = p.path.length &gt; 300 ? 2 : 1;
+        for (let j = 1; j &lt; p.path.length; j += ptStep) {
+          pD += &#x27;L&#x27; + xy(p.path[j]);
+        }
+        pD += &#x27;L&#x27; + xy(p);
       }
       el(&#x27;sl-pathline-soft&#x27;).setAttribute(&#x27;d&#x27;, pD);
       el(&#x27;sl-pathline-line&#x27;).setAttribute(&#x27;d&#x27;, pD);
-      const head = el(&#x27;sl-pathline-head&#x27;);
-      head.style.display = &#x27;&#x27;;
-      head.setAttribute(&#x27;cx&#x27;, n(px(pathParticle.x)));
-      head.setAttribute(&#x27;cy&#x27;, n(py(pathParticle.y)));
     } else {
       el(&#x27;sl-pathline-soft&#x27;).setAttribute(&#x27;d&#x27;, &#x27;&#x27;);
       el(&#x27;sl-pathline-line&#x27;).setAttribute(&#x27;d&#x27;, &#x27;&#x27;);
-      el(&#x27;sl-pathline-head&#x27;).style.display = &#x27;none&#x27;;
     }
+    el(&#x27;sl-pathline-head&#x27;).style.display = &#x27;none&#x27;;
     el(&#x27;sl-count&#x27;).textContent = `${particles.length.toLocaleString()} tracers in view`;
     if (vortex.active) {
       el(&#x27;sl-vortex&#x27;).style.display = &#x27;&#x27;;
@@ -1877,7 +1882,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     pipette.classList.add(&#x27;sl-squeezed&#x27;);
     run++;
     const t = ticks * DT;
-    particles.push({ ...SOURCE, born: t, run, id: released++ });
+    particles.push({ ...SOURCE, born: t, run, id: released++, trackPath: true, path: [{ ...SOURCE }] });
     injectAccumulator = 0;
     el(&#x27;sl-source&#x27;).style.opacity = &#x27;1&#x27;;
     el(&#x27;sl-rate-label&#x27;).textContent = formatRate(state.rate);
@@ -1926,10 +1931,6 @@ html&gt;body{padding:0}&lt;/style&gt;
   if (pathlineToggle) {
     pathlineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
       state.pathline = pathlineToggle.checked;
-      if (state.pathline) {
-        pathParticle = { ...SOURCE };
-        pathHistory = [{ ...SOURCE }];
-      }
       draw();
       save();
       announce(state.pathline ? &#x27;Pathline turned on.&#x27; : &#x27;Pathline turned off.&#x27;);
@@ -2004,12 +2005,10 @@ html&gt;body{padding:0}&lt;/style&gt;
     state.line = false;
     state.pathline = false;
     state.streamline = false;
-    state.rate = 4;
+    state.rate = 0.5;
     state.waveStrength = 1;
     vortex.active = false;
     isPipetteHeld = false;
-    pathParticle = { ...SOURCE };
-    pathHistory = [{ ...SOURCE }];
     pipette.classList.remove(&#x27;sl-squeezed&#x27;);
     initialize();
     syncControls();
@@ -2063,6 +2062,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
