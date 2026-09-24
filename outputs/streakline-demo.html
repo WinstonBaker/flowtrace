@@ -1335,6 +1335,10 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;div class=&quot;sl-status-badges&quot;&gt;
       &lt;span class=&quot;sl-regime-pill&quot; id=&quot;sl-regime-indicator&quot;&gt;⚡ Time-varying wave flow&lt;/span&gt;
       &lt;span class=&quot;text-small tabular-nums sl-time-pill&quot; id=&quot;sl-time&quot;&gt;t = 0.0 s&lt;/span&gt;
+      &lt;button type=&quot;button&quot; class=&quot;sl-theme-btn&quot; id=&quot;sl-theme-toggle&quot; aria-label=&quot;Toggle dark mode&quot; title=&quot;Toggle dark mode&quot;&gt;
+        &lt;span class=&quot;sl-theme-icon&quot; aria-hidden=&quot;true&quot;&gt;🌙&lt;/span&gt;
+        &lt;span class=&quot;sl-theme-text&quot; id=&quot;sl-theme-text&quot;&gt;Dark&lt;/span&gt;
+      &lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 
@@ -1587,6 +1591,37 @@ html&gt;body{padding:0}&lt;/style&gt;
     background: color-mix(in srgb, var(--foreground) 7%, transparent);
     color: var(--foreground);
     border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  }
+  #streakline-lab .sl-theme-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    background: color-mix(in srgb, var(--foreground) 7%, transparent);
+    color: var(--foreground);
+    border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #streakline-lab .sl-theme-btn:hover {
+    background: color-mix(in srgb, var(--foreground) 13%, transparent);
+    border-color: color-mix(in srgb, var(--foreground) 25%, transparent);
+  }
+  #streakline-lab .sl-theme-btn:active {
+    transform: scale(0.97);
+  }
+  #streakline-lab .sl-theme-icon {
+    font-size: 11px;
+    line-height: 1;
+  }
+  #streakline-lab.sl-theme-dark {
+    color-scheme: dark;
   }
 
   /* Cards Grid */
@@ -2216,6 +2251,53 @@ html&gt;body{padding:0}&lt;/style&gt;
   const vortexLegend = el(&#x27;sl-vortex-legend&#x27;);
   const pipette = el(&#x27;sl-pipette&#x27;);
   let isPipetteHeld = false;
+  const themeToggle = el(&#x27;sl-theme-toggle&#x27;);
+  const themeIcon = themeToggle ? themeToggle.querySelector(&#x27;.sl-theme-icon&#x27;) : null;
+  const themeText = el(&#x27;sl-theme-text&#x27;);
+  function getSystemTheme() {
+    return window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).matches ? &#x27;dark&#x27; : &#x27;light&#x27;;
+  }
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem(&#x27;sl-theme&#x27;);
+    } catch {
+      return null;
+    }
+  }
+  function applyTheme(t) {
+    const isDark = (t === &#x27;dark&#x27;);
+    document.documentElement.dataset.theme = t;
+    document.documentElement.style.colorScheme = t;
+    root.style.colorScheme = t;
+    root.classList.toggle(&#x27;sl-theme-dark&#x27;, isDark);
+    if (themeIcon) themeIcon.textContent = isDark ? &#x27;☀️&#x27; : &#x27;🌙&#x27;;
+    if (themeText) themeText.textContent = isDark ? &#x27;Light&#x27; : &#x27;Dark&#x27;;
+    if (themeToggle) {
+      themeToggle.setAttribute(&#x27;aria-label&#x27;, isDark ? &#x27;Switch to light mode&#x27; : &#x27;Switch to dark mode&#x27;);
+      themeToggle.setAttribute(&#x27;title&#x27;, isDark ? &#x27;Switch to light mode&#x27; : &#x27;Switch to dark mode&#x27;);
+      themeToggle.classList.toggle(&#x27;is-dark&#x27;, isDark);
+    }
+  }
+  function toggleTheme() {
+    const current = (document.documentElement.dataset.theme === &#x27;dark&#x27; || root.style.colorScheme === &#x27;dark&#x27;) ? &#x27;dark&#x27; : &#x27;light&#x27;;
+    const next = (current === &#x27;dark&#x27;) ? &#x27;light&#x27; : &#x27;dark&#x27;;
+    try {
+      localStorage.setItem(&#x27;sl-theme&#x27;, next);
+    } catch {}
+    applyTheme(next);
+    save();
+    announce(next === &#x27;dark&#x27; ? &#x27;Dark mode activated.&#x27; : &#x27;Light mode activated.&#x27;);
+  }
+  if (themeToggle) {
+    themeToggle.addEventListener(&#x27;click&#x27;, toggleTheme);
+  }
+  const initialTheme = getStoredTheme() || getSystemTheme();
+  applyTheme(initialTheme);
+  window.matchMedia(&#x27;(prefers-color-scheme: dark)&#x27;).addEventListener(&#x27;change&#x27;, e =&gt; {
+    if (!getStoredTheme()) {
+      applyTheme(e.matches ? &#x27;dark&#x27; : &#x27;light&#x27;);
+    }
+  });
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
   const state = { frozenField: false, paused: reducedMotion.matches, injecting: false, rate: 10, line: false, pathline: false, streamline: false, waveStrength: 1 };
   let frozenTime = 0;
@@ -2277,11 +2359,12 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (typeof saved.waveStrength === &#x27;number&#x27; &amp;&amp; saved.waveStrength &gt;= 0 &amp;&amp; saved.waveStrength &lt;= 2) state.waveStrength = saved.waveStrength;
     const r = Number(saved.rate ?? saved.releaseRate);
     if (Number.isFinite(r) &amp;&amp; r &gt;= 1 &amp;&amp; r &lt;= 10000) state.rate = r;
+    if (saved.theme === &#x27;dark&#x27; || saved.theme === &#x27;light&#x27;) applyTheme(saved.theme);
   }
   applySettings(window.openai?.widgetState);
   function save() {
     if (window.openai?.setWidgetState) {
-      window.openai.setWidgetState({ modelContent: { streakline: { ...state, releaseRate: state.rate } }, privateContent: null }).catch(() =&gt; {});
+      window.openai.setWidgetState({ modelContent: { streakline: { ...state, releaseRate: state.rate, theme: document.documentElement.dataset.theme || &#x27;light&#x27; } }, privateContent: null }).catch(() =&gt; {});
     }
   }
   function velocity(x, y, t) {
@@ -2794,6 +2877,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 

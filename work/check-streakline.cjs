@@ -30,6 +30,11 @@ assert(!fragment.includes('\\"'));
   assert.equal(await ui.locator('#sl-line-toggle').isChecked(), false, 'streakline switch initially off');
   assert.equal(await ui.locator('#sl-pathline-toggle').isChecked(), false, 'pathline switch initially off');
   assert.equal(await ui.locator('#sl-streamline-toggle').isChecked(), false, 'streamline switch initially off');
+  assert.equal(await ui.locator('#sl-theme-toggle').isVisible(), true, 'theme toggle is visible');
+  await ui.locator('#sl-theme-toggle').click();
+  assert.equal(await ui.locator('#sl-theme-text').textContent(), 'Light', 'theme toggle switches to dark mode showing Light button');
+  await ui.locator('#sl-theme-toggle').click();
+  assert.equal(await ui.locator('#sl-theme-text').textContent(), 'Dark', 'theme toggle switches back to light mode showing Dark button');
 
   await ui.locator('#sl-streamline-toggle').check();
   const stInitial = await ui.locator('#sl-streamline-line').getAttribute('d');
