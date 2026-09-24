@@ -1648,7 +1648,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       curr.x += dTau * (a.x + 2 * b.x + 2 * c.x + k.x) / 6;
       curr.y += dTau * (a.y + 2 * b.y + 2 * c.y + k.y) / 6;
       d += &#x27;L&#x27; + xy(curr);
-      if (curr.x &gt;= L || curr.x &lt; -0.2 || curr.y &lt;= 0 || curr.y &gt;= H) break;
+      if (curr.x &gt;= L + 2.0 || curr.x &lt; -0.5 || curr.y &lt;= -0.2 || curr.y &gt;= H + 0.2) break;
     }
     return d;
   }
@@ -1691,11 +1691,11 @@ html&gt;body{padding:0}&lt;/style&gt;
         }
       }
     }
-    particles = particles.filter(p =&gt; p.x &lt;= L + .2 &amp;&amp; p.y &gt;= 0 &amp;&amp; p.y &lt;= H);
+    particles = particles.filter(p =&gt; p.x &lt;= L + 2.5 &amp;&amp; p.y &gt;= -0.3 &amp;&amp; p.y &lt;= H + 0.3);
     if (particles.length &gt; 35000) particles.splice(0, particles.length - 35000);
     for (const p of motes) {
       advect(p, t, DT);
-      if (p.x &gt; L + .1) p.x -= L + .2;
+      if (p.x &gt; L + 1.0) p.x -= L + 1.2;
     }
     ticks++;
   }
@@ -1779,7 +1779,9 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
     el(&#x27;sl-pathline-head&#x27;).style.display = &#x27;none&#x27;;
         let totalTracers = 0;
-    for (let i = 0; i &lt; particles.length; i++) totalTracers += (particles[i].weight || 1);
+    for (let i = 0; i &lt; particles.length; i++) {
+      if (particles[i].x &lt;= L) totalTracers += (particles[i].weight || 1);
+    }
     totalTracers = Math.min(1000000, Math.round(totalTracers));
     el(&#x27;sl-count&#x27;).textContent = `${totalTracers.toLocaleString()} tracers in view`;
     if (vortex.active) {
@@ -2086,6 +2088,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
