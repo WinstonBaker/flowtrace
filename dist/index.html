@@ -1396,7 +1396,6 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;/div&gt;
           &lt;span class=&quot;sl-card-desc&quot;&gt;Perturb flow with periodic waves&lt;/span&gt;
         &lt;/div&gt;
-        &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-freeze-field&quot;&gt;Freeze velocity field&lt;/button&gt;
       &lt;/div&gt;
       &lt;label class=&quot;form-label&quot; for=&quot;sl-wave&quot;&gt;
         &lt;div class=&quot;sl-label-row&quot;&gt;
@@ -1426,7 +1425,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;!-- Diagnostic Lines &amp; Action Controls Bar --&gt;
   &lt;div class=&quot;sl-control-deck&quot;&gt;
     &lt;div class=&quot;sl-lines-deck&quot;&gt;
-      &lt;span class=&quot;sl-deck-label&quot;&gt;Flow Lines:&lt;/span&gt;
+      &lt;span class=&quot;sl-deck-label&quot;&gt;Flow Lines &amp; Field:&lt;/span&gt;
       &lt;div class=&quot;sl-lines-pills&quot;&gt;
         &lt;label class=&quot;form-check form-switch sl-line-pill sl-pill-streak&quot; for=&quot;sl-line-toggle&quot;&gt;
           &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot;&gt;
@@ -1449,6 +1448,7 @@ html&gt;body{padding:0}&lt;/style&gt;
             &lt;span class=&quot;sl-pill-title&quot;&gt;Streamline&lt;/span&gt;
           &lt;/span&gt;
         &lt;/label&gt;
+        &lt;button type=&quot;button&quot; class=&quot;sl-line-pill sl-pill-freeze&quot; id=&quot;sl-freeze-field&quot; aria-pressed=&quot;false&quot;&gt;Freeze velocity field&lt;/button&gt;
       &lt;/div&gt;
     &lt;/div&gt;
     &lt;div class=&quot;sl-actions-deck&quot;&gt;
@@ -1987,6 +1987,49 @@ html&gt;body{padding:0}&lt;/style&gt;
     border-color: #10b981;
     background: color-mix(in srgb, #10b981 10%, var(--card));
   }
+  #streakline-lab .sl-pill-freeze {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 2.5px 8px;
+    border-radius: 7px;
+    background: var(--card);
+    border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+    color: var(--foreground);
+    cursor: pointer;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    max-width: 100%;
+  }
+  #streakline-lab .sl-pill-freeze::before {
+    content: &#x27;&#x27;;
+    display: inline-block;
+    width: 24px;
+    height: 14px;
+    min-width: 24px;
+    border-radius: 999px;
+    background: radial-gradient(circle 5px at 7px 7px, #ffffff 98%, transparent 100%), color-mix(in srgb, var(--foreground) 24%, transparent);
+    transition: all 0.15s ease;
+    vertical-align: middle;
+  }
+  #streakline-lab .sl-pill-freeze:hover {
+    border-color: color-mix(in srgb, var(--foreground) 30%, transparent);
+    background: color-mix(in srgb, var(--foreground) 4%, var(--card));
+  }
+  #streakline-lab .sl-pill-freeze.is-active {
+    border-color: #4f46e5;
+    color: #4f46e5;
+    background: color-mix(in srgb, #4f46e5 10%, var(--card));
+  }
+  #streakline-lab .sl-pill-freeze.is-active::before {
+    background: radial-gradient(circle 5px at 17px 7px, #ffffff 98%, transparent 100%), #4f46e5;
+  }
   #streakline-lab .sl-pill-title {
     font-size: 11.5px;
     font-weight: 600;
@@ -2434,8 +2477,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (freezeBtn) {
       freezeBtn.textContent = state.frozenField ? &#x27;Unfreeze velocity field&#x27; : &#x27;Freeze velocity field&#x27;;
       freezeBtn.setAttribute(&#x27;aria-pressed&#x27;, state.frozenField ? &#x27;true&#x27; : &#x27;false&#x27;);
-      freezeBtn.classList.toggle(&#x27;btn-primary&#x27;, state.frozenField);
-      freezeBtn.classList.toggle(&#x27;btn-secondary&#x27;, !state.frozenField);
+      freezeBtn.classList.toggle(&#x27;is-active&#x27;, state.frozenField);
     }
     if (regimeIndicator) {
       regimeIndicator.textContent = state.frozenField ? &#x27;❄️ Frozen field (Steady flow)&#x27; : &#x27;⚡ Time-varying wave flow&#x27;;
@@ -2751,6 +2793,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
