@@ -1335,10 +1335,6 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;div class=&quot;sl-status-badges&quot;&gt;
       &lt;span class=&quot;sl-regime-pill&quot; id=&quot;sl-regime-indicator&quot;&gt;⚡ Time-varying wave flow&lt;/span&gt;
       &lt;span class=&quot;text-small tabular-nums sl-time-pill&quot; id=&quot;sl-time&quot;&gt;t = 0.0 s&lt;/span&gt;
-      &lt;button type=&quot;button&quot; class=&quot;sl-theme-btn&quot; id=&quot;sl-theme-toggle&quot; aria-label=&quot;Toggle dark mode&quot; title=&quot;Toggle dark mode&quot;&gt;
-        &lt;span class=&quot;sl-theme-icon&quot; aria-hidden=&quot;true&quot;&gt;🌙&lt;/span&gt;
-        &lt;span class=&quot;sl-theme-text&quot; id=&quot;sl-theme-text&quot;&gt;Dark&lt;/span&gt;
-      &lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 
@@ -1507,7 +1503,13 @@ html&gt;body{padding:0}&lt;/style&gt;
       &lt;span id=&quot;sl-vortex-legend&quot; class=&quot;sl-legend-item&quot; style=&quot;display:none;&quot;&gt;&lt;span class=&quot;sl-vortex-dot&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;Swirl vortex&lt;/span&gt;
     &lt;/div&gt;
     &lt;div class=&quot;sl-footer-meta&quot;&gt;
-      &lt;span class=&quot;sl-tip-meta&quot;&gt;Tip: Click or drag water to stir flow &amp;bull; Click pipette to squeeze&lt;/span&gt;
+      &lt;div class=&quot;sl-footer-left&quot;&gt;
+        &lt;button type=&quot;button&quot; class=&quot;sl-theme-btn&quot; id=&quot;sl-theme-toggle&quot; aria-label=&quot;Toggle dark mode&quot; title=&quot;Toggle dark mode&quot;&gt;
+          &lt;span class=&quot;sl-theme-icon&quot; aria-hidden=&quot;true&quot;&gt;🌙&lt;/span&gt;
+          &lt;span class=&quot;sl-theme-text&quot; id=&quot;sl-theme-text&quot;&gt;Dark&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;span class=&quot;sl-tip-meta&quot;&gt;Tip: Click or drag water to stir flow &amp;bull; Click pipette to squeeze&lt;/span&gt;
+      &lt;/div&gt;
       &lt;span class=&quot;tabular-nums sl-count-badge&quot; id=&quot;sl-count&quot;&gt;0 tracers in view&lt;/span&gt;
     &lt;/div&gt;
   &lt;/div&gt;
@@ -2213,6 +2215,12 @@ html&gt;body{padding:0}&lt;/style&gt;
     border-top: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
     padding-top: 6px;
   }
+  #streakline-lab .sl-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
   #streakline-lab .sl-tip-meta {
     font-style: italic;
   }
@@ -2884,6 +2892,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
