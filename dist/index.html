@@ -1349,6 +1349,10 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-dye&quot; checked&gt;
         &lt;span class=&quot;form-check-label&quot;&gt;Release dye&lt;/span&gt;
       &lt;/label&gt;
+      &lt;label class=&quot;form-check form-switch&quot;&gt;
+        &lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;sl-line-toggle&quot; checked&gt;
+        &lt;span class=&quot;form-check-label&quot;&gt;Connecting line&lt;/span&gt;
+      &lt;/label&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;svg class=&quot;sl-scene&quot; id=&quot;sl-scene&quot; role=&quot;img&quot; aria-labelledby=&quot;sl-title sl-description&quot;&gt;
@@ -1423,9 +1427,10 @@ html&gt;body{padding:0}&lt;/style&gt;
   const release = el(&#x27;sl-dye&#x27;);
   const rate = el(&#x27;sl-rate&#x27;);
   const rateVal = el(&#x27;sl-rate-val&#x27;);
+  const lineToggle = el(&#x27;sl-line-toggle&#x27;);
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
-  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true, rate: 60 };
-  const L = 12, H = 4, U = 1.25, B = .96, K = .82, OMEGA = 1.1;
+  const state = { mode: &#x27;unsteady&#x27;, paused: reducedMotion.matches, injecting: true, rate: 60, line: true };
+  const L = 12, H = 4, U = 0.65, B = 0.50, K = 0.82, OMEGA = 0.58;
   const SOURCE = { x: 1.28, y: 2.65 };
   const DT = 1 / 120;
   let ticks = 0, particles = [], motes = [], run = 0, released = 0, injectAccumulator = 0.5;
@@ -1438,6 +1443,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     if ([&#x27;unsteady&#x27;, &#x27;steady&#x27;, &#x27;uniform&#x27;].includes(saved.mode)) state.mode = saved.mode;
     if (typeof saved.paused === &#x27;boolean&#x27;) state.paused = saved.paused;
     if (typeof saved.injecting === &#x27;boolean&#x27;) state.injecting = saved.injecting;
+    if (typeof saved.line === &#x27;boolean&#x27;) state.line = saved.line;
     const r = Number(saved.rate ?? saved.releaseRate);
     if (Number.isFinite(r) &amp;&amp; r &gt;= 10 &amp;&amp; r &lt;= 120) state.rate = r;
   }
@@ -1535,13 +1541,17 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-motes&#x27;).setAttribute(&#x27;d&#x27;, motes.map(p =&gt; &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;).join(&#x27;&#x27;));
     let path = &#x27;&#x27;, dots = &#x27;&#x27;, previousRun = null;
     for (const p of particles) {
-      path += (p.run === previousRun ? &#x27;L&#x27; : &#x27;M&#x27;) + xy(p);
-      previousRun = p.run;
-      if (p.id % 15 === 0) dots += &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;;
+      if (state.line) {
+        path += (p.run === previousRun ? &#x27;L&#x27; : &#x27;M&#x27;) + xy(p);
+        previousRun = p.run;
+        if (p.id % 15 === 0) dots += &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;;
+      } else {
+        dots += &#x27;M&#x27; + xy(p) + &#x27;h.1&#x27;;
+      }
     }
-    if (state.injecting &amp;&amp; previousRun === run) path += &#x27;L&#x27; + xy(SOURCE);
-    el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, path);
-    el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, path);
+    if (state.line &amp;&amp; state.injecting &amp;&amp; previousRun === run) path += &#x27;L&#x27; + xy(SOURCE);
+    el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
+    el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-dots&#x27;).setAttribute(&#x27;d&#x27;, dots);
     el(&#x27;sl-count&#x27;).textContent = `${particles.length} tracers in view`;
     if (Math.floor(t * 10) !== uiClock) {
@@ -1554,12 +1564,19 @@ html&gt;body{padding:0}&lt;/style&gt;
     pause.textContent = state.paused ? &#x27;Play&#x27; : &#x27;Pause&#x27;;
     pause.setAttribute(&#x27;aria-label&#x27;, state.paused ? &#x27;Play flow simulation&#x27; : &#x27;Pause flow simulation&#x27;);
     release.checked = state.injecting;
+    lineToggle.checked = state.line;
     rate.value = state.rate;
     rateVal.textContent = `${state.rate} / s`;
     el(&#x27;sl-rate-label&#x27;).textContent = state.injecting ? `${state.rate} tracers / s` : &#x27;Dye off&#x27;;
     el(&#x27;sl-source&#x27;).style.opacity = state.injecting ? &#x27;1&#x27; : &#x27;.3&#x27;;
   }
   const announce = text =&gt; { el(&#x27;sl-announcement&#x27;).textContent = text; };
+  lineToggle.addEventListener(&#x27;change&#x27;, () =&gt; {
+    state.line = lineToggle.checked;
+    draw();
+    save();
+    announce(state.line ? &#x27;Connecting lines turned on.&#x27; : &#x27;Connecting lines turned off.&#x27;);
+  });
   rate.addEventListener(&#x27;input&#x27;, () =&gt; {
     state.rate = Number(rate.value);
     syncControls();
