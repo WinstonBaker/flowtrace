@@ -1328,10 +1328,6 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;/script&gt;
 &lt;div id=&quot;streakline-lab&quot;&gt;
   &lt;div class=&quot;sl-heading&quot;&gt;
-    &lt;div class=&quot;sl-title-group&quot;&gt;
-      &lt;h2&gt;One pipette. An evolving streakline.&lt;/h2&gt;
-      &lt;p class=&quot;sl-subtitle&quot;&gt;Compare streaklines, pathlines, and streamlines in unsteady wave flow&lt;/p&gt;
-    &lt;/div&gt;
     &lt;div class=&quot;sl-status-badges&quot;&gt;
       &lt;span class=&quot;text-small tabular-nums sl-time-pill&quot; id=&quot;sl-time&quot;&gt;t = 0.0 s&lt;/span&gt;
     &lt;/div&gt;
@@ -1529,7 +1525,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   #streakline-lab .sl-heading {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 12px;
     flex-wrap: wrap;
     width: 100%;
@@ -2888,6 +2884,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
