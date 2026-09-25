@@ -2307,7 +2307,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   });
   const reducedMotion = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;);
   const state = { frozenField: false, paused: reducedMotion.matches, injecting: false, rate: 10, line: false, pathline: false, streamline: false, waveStrength: 1 };
-  let frozenTime = 0;
+  let fieldTime = 0;
   const vortex = { active: false, x: 6, y: 2, gamma: 1.2 };
   const L = 12, H = 4, U = 0.65, B = 0.50, K = 0.82, OMEGA = 0.58;
   const SOURCE = { x: 1.28, y: 2.65 };
@@ -2374,10 +2374,9 @@ html&gt;body{padding:0}&lt;/style&gt;
       window.openai.setWidgetState({ modelContent: { streakline: { ...state, releaseRate: state.rate, theme: document.documentElement.dataset.theme || &#x27;light&#x27; } }, privateContent: null }).catch(() =&gt; {});
     }
   }
-  function velocity(x, y, t) {
+  function velocity(x, y, t = fieldTime) {
     let vx = 0, vy = 0;
-    const effT = state.frozenField ? frozenTime : t;
-    const phase = K * x - OMEGA * effT;
+    const phase = K * x - OMEGA * t;
     const s = Math.sin(Math.PI * y / H);
     const amp = B * state.waveStrength;
     vx = U + amp * Math.PI / H * Math.sin(2 * Math.PI * y / H) * Math.sin(phase);
@@ -2393,14 +2392,15 @@ html&gt;body{padding:0}&lt;/style&gt;
     return { x: vx, y: vy };
   }
   function advect(p, t, dt) {
+    const dtField = state.frozenField ? 0 : dt;
     const a = velocity(p.x, p.y, t);
-    const b = velocity(p.x + a.x * dt / 2, p.y + a.y * dt / 2, t + dt / 2);
-    const c = velocity(p.x + b.x * dt / 2, p.y + b.y * dt / 2, t + dt / 2);
-    const d = velocity(p.x + c.x * dt, p.y + c.y * dt, t + dt);
+    const b = velocity(p.x + a.x * dt / 2, p.y + a.y * dt / 2, t + dtField / 2);
+    const c = velocity(p.x + b.x * dt / 2, p.y + b.y * dt / 2, t + dtField / 2);
+    const d = velocity(p.x + c.x * dt, p.y + c.y * dt, t + dtField);
     p.x += dt * (a.x + 2 * b.x + 2 * c.x + d.x) / 6;
     p.y += dt * (a.y + 2 * b.y + 2 * c.y + d.y) / 6;
   }
-  function computeStreamline(t) {
+  function computeStreamline(t = fieldTime) {
     if (!state.streamline) return &#x27;&#x27;;
     let curr = { x: SOURCE.x, y: SOURCE.y };
     let d = &#x27;M&#x27; + xy(curr);
@@ -2418,7 +2418,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     return d;
   }
   function initialize() {
-    ticks = 0; particles = []; accumulated = 0; last = null; uiClock = -1; run = 0; released = 0;
+    ticks = 0; fieldTime = 0; particles = []; accumulated = 0; last = null; uiClock = -1; run = 0; released = 0;
     injectAccumulator = 1 - state.rate * DT;
     motes = Array.from({ length: 90 }, (_, i) =&gt; ({
       x: ((i * .61803398875) % 1) * L,
@@ -2449,7 +2449,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
     const recordTick = (ticks % 3 === 0);
     for (const p of particles) {
-      advect(p, t, DT);
+      advect(p, fieldTime, DT);
       if (p.trackPath &amp;&amp; recordTick) {
         if (p.path.length &lt; 800) {
           p.path.push({ x: p.x, y: p.y });
@@ -2459,8 +2459,11 @@ html&gt;body{padding:0}&lt;/style&gt;
     particles = particles.filter(p =&gt; p.x &lt;= L + 2.5 &amp;&amp; p.y &gt;= -0.3 &amp;&amp; p.y &lt;= H + 0.3);
     if (particles.length &gt; 35000) particles.splice(0, particles.length - 35000);
     for (const p of motes) {
-      advect(p, t, DT);
+      advect(p, fieldTime, DT);
       if (p.x &gt; L + 1.0) p.x -= L + 1.2;
+    }
+    if (!state.frozenField) {
+      fieldTime += DT;
     }
     ticks++;
   }
@@ -2498,7 +2501,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     for (let row = 0; row &lt; 4; row++) {
       for (let col = 0; col &lt; columns; col++) {
         const x = (col + .5) / columns * L, y = (row + .5) / 4 * H;
-        const v = velocity(x, y, t), dx = v.x * (width - 24) / L, dy = -v.y * (bottom - top) / H;
+        const v = velocity(x, y, fieldTime), dx = v.x * (width - 24) / L, dy = -v.y * (bottom - top) / H;
         const mag = Math.hypot(dx, dy), ux = dx / mag, uy = dy / mag;
         const length = Math.min(30, Math.max(11, mag * .35));
         const x0 = px(x) - ux * length / 2, y0 = py(y) - uy * length / 2;
@@ -2522,7 +2525,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     el(&#x27;sl-dye-soft&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-line&#x27;).setAttribute(&#x27;d&#x27;, state.line ? path : &#x27;&#x27;);
     el(&#x27;sl-dye-dots&#x27;).setAttribute(&#x27;d&#x27;, dots);
-    const streamlineD = computeStreamline(t);
+    const streamlineD = computeStreamline(fieldTime);
     el(&#x27;sl-streamline-soft&#x27;).setAttribute(&#x27;d&#x27;, streamlineD);
     el(&#x27;sl-streamline-line&#x27;).setAttribute(&#x27;d&#x27;, streamlineD);
     if (state.pathline &amp;&amp; particles.length &gt; 0) {
@@ -2814,7 +2817,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   const resetBtn = el(&#x27;sl-reset&#x27;);
   function resetAll() {
     state.frozenField = false;
-    frozenTime = 0;
+    fieldTime = 0;
     state.paused = false;
     state.injecting = false;
     state.line = false;
@@ -2845,9 +2848,6 @@ html&gt;body{padding:0}&lt;/style&gt;
   if (freezeBtn) {
     freezeBtn.addEventListener(&#x27;click&#x27;, () =&gt; {
       state.frozenField = !state.frozenField;
-      if (state.frozenField) {
-        frozenTime = ticks * DT;
-      }
       syncControls();
       draw();
       save();
@@ -2884,6 +2884,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
