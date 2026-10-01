@@ -1341,9 +1341,7 @@ html&gt;body{padding:0}&lt;/style&gt;
           &lt;div class=&quot;sl-title-with-badge&quot;&gt;
             &lt;span class=&quot;sl-card-title&quot;&gt;Tracer Injection&lt;/span&gt;
           &lt;/div&gt;
-
         &lt;/div&gt;
-        &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary sl-btn-compact&quot; id=&quot;sl-clear-tracers&quot; disabled&gt;Clear tracers&lt;/button&gt;
       &lt;/div&gt;
       &lt;label class=&quot;form-label&quot; for=&quot;sl-rate&quot;&gt;
         &lt;div class=&quot;sl-label-row&quot;&gt;
@@ -1444,7 +1442,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     &lt;div class=&quot;sl-actions-deck&quot;&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-primary&quot; id=&quot;sl-pause&quot;&gt;Pause&lt;/button&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-vortex-clear&quot; disabled&gt;Clear swirl&lt;/button&gt;
-      &lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;sl-reset&quot;&gt;Reset&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-secondary&quot; id=&quot;sl-clear-tracers&quot; disabled&gt;Clear tracers&lt;/button&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 
@@ -1502,7 +1500,10 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;/button&gt;
         &lt;span class=&quot;sl-tip-meta&quot;&gt;Tip: Click or drag water to stir flow &amp;bull; Click pipette to squeeze&lt;/span&gt;
       &lt;/div&gt;
-      &lt;span class=&quot;tabular-nums sl-count-badge&quot; id=&quot;sl-count&quot;&gt;0 tracers in view&lt;/span&gt;
+      &lt;div class=&quot;sl-footer-right&quot;&gt;
+        &lt;span class=&quot;tabular-nums sl-count-badge&quot; id=&quot;sl-count&quot;&gt;0 tracers in view&lt;/span&gt;
+        &lt;button type=&quot;button&quot; class=&quot;btn sl-btn-reset&quot; id=&quot;sl-reset&quot; title=&quot;Reset all settings to default&quot;&gt;Reset all&lt;/button&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div id=&quot;sl-announcement&quot; class=&quot;sr-only&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
@@ -2097,28 +2098,36 @@ html&gt;body{padding:0}&lt;/style&gt;
     border-color: #4338ca;
     color: #ffffff;
   }
+  #streakline-lab .sl-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
   #streakline-lab #sl-reset {
-    background: #dc2626;
-    border-color: #b91c1c;
-    color: #ffffff;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--foreground) 22%, transparent);
+    color: var(--foreground);
+    opacity: 0.85;
+    font-size: 11px;
+    padding: 2.5px 8px;
+    border-radius: 6px;
     font-weight: 600;
-    font-size: 12px;
-    padding: 3.5px 9px;
     cursor: pointer;
-    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    transition: all 0.15s ease;
   }
   #streakline-lab #sl-reset:hover {
-    background: #b91c1c;
-    border-color: #991b1b;
-    box-shadow: 0 1px 5px rgba(220, 38, 38, 0.35);
+    opacity: 1;
+    background: color-mix(in srgb, #dc2626 12%, transparent);
+    border-color: #dc2626;
+    color: #dc2626;
   }
   #streakline-lab #sl-reset:active {
-    transform: scale(0.94);
-    background: #991b1b;
+    transform: scale(0.96);
   }
   #streakline-lab #sl-reset:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.4);
+    box-shadow: 0 0 0 2px color-mix(in srgb, #dc2626 40%, transparent);
   }
 
   /* SVG Scene */
@@ -2866,6 +2875,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   layout(); requestAnimationFrame(animate);
 })();
 &lt;/script&gt;
+
 
 
 
